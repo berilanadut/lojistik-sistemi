@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+  <!-- Türkçe karakter desteği -->
+  <meta charset="UTF-8">
+
+  <!-- Telefon ve tabletlerde düzgün görünmesi için -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Tarayıcı sekmesinde gözükecek isim -->
+  <title>Kargo Yönetimi</title>
+
+  <!-- Ana CSS dosyamızı bağlıyoruz -->
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>📦 Kargo Yönetimi</h1>
+
+  <p class="subtitle">
+    Kargo ekleme, güncelleme, silme ve sorgulama işlemleri
+  </p>
+
+  <!-- Ana sayfaya dönüş bağlantısı -->
+  <div class="back-button">
+    <a href="index.html">🏠 Ana Sayfaya Dön</a>
+  </div>
+
+  <!-- Kargo sorgulama bölümü -->
+  <div class="search-section">
+
+    <h2>🔍 Kargo Sorgulama</h2>
+
+    <label for="aramaKargoNo">Kargo No</label>
+
+    <input
+            type="text"
+            id="aramaKargoNo"
+            placeholder="Kargo numarasını giriniz">
+
+    <button id="araBtn">
+      Ara
+    </button>
+
+  </div>
+
+  <!-- Kargo bilgileri bölümü -->
+  <div class="cargo-form">
+
+    <h2>📋 Kargo Bilgileri</h2>
+
+    <label for="kargoNo">Kargo No</label>
+    <input
+            type="text"
+            id="kargoNo"
+            placeholder="Kargo numarasını giriniz">
+
+    <label for="gonderici">Gönderici</label>
+    <input
+            type="text"
+            id="gonderici"
+            placeholder="Gönderici adını giriniz">
+
+    <label for="alici">Alıcı</label>
+    <input
+            type="text"
+            id="alici"
+            placeholder="Alıcı adını giriniz">
+
+    <label for="gondericiSube">Gönderici Şube</label>
+    <input
+            type="text"
+            id="gondericiSube"
+            placeholder="Gönderici şubeyi giriniz">
+
+    <label for="teslimatSube">Teslimat Şubesi</label>
+    <input
+            type="text"
+            id="teslimatSube"
+            placeholder="Teslimat şubesini giriniz">
+
+    <label for="desi">Desi</label>
+    <input
+            type="number"
+            id="desi"
+            placeholder="Desi otomatik hesaplanacak"
+            readonly>
+
+    <button id="desiHesaplaBtn">
+      📦 Desi Hesapla
+    </button>
+
+    <label for="agirlik">Ağırlık (kg)</label>
+    <input
+            type="number"
+            id="agirlik"
+            placeholder="Ağırlığı giriniz">
+
+    <label for="en">En (cm)</label>
+    <input
+            type="number"
+            id="en"
+            placeholder="En ölçüsünü giriniz">
+
+    <label for="boy">Boy (cm)</label>
+    <input
+            type="number"
+            id="boy"
+            placeholder="Boy ölçüsünü giriniz">
+
+    <label for="yukseklik">Yükseklik (cm)</label>
+    <input
+            type="number"
+            id="yukseklik"
+            placeholder="Yükseklik ölçüsünü giriniz">
+
+    <label for="durum">Kargo Durumu</label>
+    <select id="durum">
+      <option>Bekliyor</option>
+      <option>Hazırlanıyor</option>
+      <option>Araca Yüklendi</option>
+      <option>Yolda</option>
+      <option>Dağıtımda</option>
+      <option>Teslim Edildi</option>
+      <option>Teslim Edilemedi</option>
+    </select>
+
+    <label for="verilisTarihi">Kargoya Veriliş Tarihi</label>
+    <input
+            type="date"
+            id="verilisTarihi">
+
+    <label for="tahminiTeslim">Tahmini Teslim Tarihi</label>
+    <input
+            type="date"
+            id="tahminiTeslim">
+
+    <label for="teslimTarihi">Teslim Tarihi</label>
+    <input
+            type="date"
+            id="teslimTarihi">
+
+    <label for="plaka">Araç Plakası</label>
+    <input
+            type="text"
+            id="plaka"
+            placeholder="Araç plakasını giriniz">
+
+    <label for="surucu">Sürücü</label>
+    <input
+            type="text"
+            id="surucu"
+            placeholder="Sürücü adını giriniz">
+
+    <label for="takipNotu">Takip Notu</label>
+    <textarea
+            id="takipNotu"
+            placeholder="Kargo ile ilgili not giriniz"></textarea>
+
+    <div class="button-group">
+
+      <button id="kaydetBtn">💾 Kaydet</button>
+
+      <button id="guncelleBtn">✏️ Güncelle</button>
+
+      <button id="silBtn">🗑️ Sil</button>
+
+      <button id="temizleBtn">🧹 Temizle</button>
+
+    </div>
+
+  </div>
+
+  <!-- Kargo listesi bölümü -->
+  <div class="cargo-list">
+
+    <h2>📑 Kargo Listesi</h2>
+
+    <table>
+
+      <thead>
+      <tr>
+        <th>Kargo No</th>
+        <th>Gönderici</th>
+        <th>Alıcı</th>
+        <th>Gönderici Şube</th>
+        <th>Teslimat Şubesi</th>
+        <th>Desi</th>
+        <th>Ağırlık (kg)</th>
+        <th>Durum</th>
+        <th>Veriliş</th>
+        <th>Tahmini Teslim</th>
+        <th>Teslim Tarihi</th>
+      </tr>
+      </thead>
+
+      <tbody id="kargoTableBody">
+      <!-- Kargolar daha sonra JavaScript ile buraya eklenecek -->
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<!-- JavaScript dosyamızı bağlıyoruz -->
+<script src="script.js"></script>
+
+</body>
+
+</html>

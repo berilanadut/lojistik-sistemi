@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ulaşım / Rota Yönetimi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🚚 Ulaşım / Rota Yönetimi</h1>
+    <p class="subtitle">Araç, rota ve teslimat yönetim sistemi</p>
+
+    <div class="back-button">
+        <a href="index.html">🏠 Ana Sayfaya Dön</a>
+    </div>
+
+    <div class="ulasim-form">
+
+        <h2>🚛 Araç ve Rota Bilgileri</h2>
+
+        <label for="plaka">Araç Plakası</label>
+        <input type="text" id="plaka" placeholder="Araç plakasını giriniz">
+
+        <label for="surucu">Sürücü</label>
+        <input type="text" id="surucu" placeholder="Sürücü adını giriniz">
+
+        <label for="baslangic">Başlangıç Noktası</label>
+        <input type="text" id="baslangic" placeholder="Başlangıç noktasını giriniz">
+
+        <label for="varis">Varış Noktası</label>
+        <input type="text" id="varis" placeholder="Varış noktasını giriniz">
+
+        <label for="rota">Planlanan Rota</label>
+        <input type="text" id="rota" placeholder="Planlanan rotayı giriniz">
+
+        <label for="guncelKonum">Güncel Konum</label>
+        <input type="text" id="guncelKonum" placeholder="Aracın güncel konumunu giriniz">
+
+        <label for="baslangicZamani">Başlangıç Zamanı</label>
+        <input type="datetime-local" id="baslangicZamani">
+
+        <label for="tahminiSure">Tahmini Süre (Dakika)</label>
+        <input type="number" id="tahminiSure" min="0" placeholder="Tahmini süreyi giriniz">
+
+        <label for="toplamMesafe">Toplam Mesafe (km)</label>
+        <input type="number" id="toplamMesafe" min="0" step="0.01" placeholder="Toplam mesafeyi giriniz">
+
+        <label for="yakit">Harcanan Yakıt (Litre)</label>
+        <input type="number" id="yakit" min="0" step="0.01" placeholder="Harcanan yakıt miktarını giriniz">
+
+        <label for="rotadanCikti">Rotadan Çıktı mı?</label>
+        <select id="rotadanCikti">
+            <option value="Hayır">Hayır</option>
+            <option value="Evet">Evet</option>
+        </select>
+
+        <h2>📦 Ürün Teslim Alma Bilgileri</h2>
+
+        <label for="teslimAlindi">Ürünler Teslim Alma Noktasından Alındı mı?</label>
+        <select id="teslimAlindi">
+            <option value="Hayır">Hayır</option>
+            <option value="Evet">Evet</option>
+        </select>
+
+        <label for="koliNo">Alınan Koli / Kutu Numarası</label>
+        <input type="text" id="koliNo" placeholder="Koli veya kutu numarasını giriniz">
+
+        <label for="teslimAlmaZamani">Teslim Alma Zamanı</label>
+        <input type="datetime-local" id="teslimAlmaZamani">
+
+        <label for="teslimAlan">Ürünü Teslim Alan Kişi</label>
+        <input type="text" id="teslimAlan" placeholder="Teslim alan kişinin adını giriniz">
+
+        <label for="teslimAlinanFirma">Ürünün Teslim Alındığı Firma</label>
+        <input type="text" id="teslimAlinanFirma" placeholder="Firma adını giriniz">
+
+        <h2>📬 Teslimat Bilgileri</h2>
+
+        <label for="teslimEdildi">Teslim Edildi mi?</label>
+        <select id="teslimEdildi">
+            <option value="Hayır">Hayır</option>
+            <option value="Evet">Evet</option>
+        </select>
+
+        <label for="teslimZamani">Teslim Zamanı</label>
+        <input type="datetime-local" id="teslimZamani">
+
+        <label for="musteri">Teslim Alan Müşteri</label>
+        <input type="text" id="musteri" placeholder="Teslim alan müşterinin adını giriniz">
+
+        <label for="onayKodu">Teslim Onay Kodu</label>
+        <input type="text" id="onayKodu" placeholder="Teslim onay kodunu giriniz">
+
+        <label for="rotaDurumu">Rota Durumu</label>
+        <select id="rotaDurumu">
+            <option value="Planlandı">Planlandı</option>
+            <option value="Yola Çıktı">Yola Çıktı</option>
+            <option value="Ürünler Alındı">Ürünler Alındı</option>
+            <option value="Yolda">Yolda</option>
+            <option value="Bekliyor">Bekliyor</option>
+            <option value="Teslim Edildi">Teslim Edildi</option>
+            <option value="Teslim Edilemedi">Teslim Edilemedi</option>
+        </select>
+
+        <label for="aciklama">Açıklama / Sorun Notu</label>
+        <textarea id="aciklama" rows="5" placeholder="Rota veya teslimatla ilgili açıklama giriniz"></textarea>
+
+        <div class="button-group">
+            <button id="ulasimKaydetBtn">💾 Kaydet</button>
+            <button id="ulasimGuncelleBtn">✏️ Güncelle</button>
+            <button id="ulasimSilBtn">🗑️ Sil</button>
+            <button id="ulasimTemizleBtn">🧹 Temizle</button>
+        </div>
+
+    </div>
+
+    <div class="ulasim-search">
+
+        <h2>🔍 Araç / Rota Ara</h2>
+
+        <label for="plakaAra">Araç Plakası</label>
+        <input type="text" id="plakaAra" placeholder="Aranacak araç plakasını giriniz">
+
+        <button id="ulasimAraBtn">🔎 Ara</button>
+
+    </div>
+
+    <div class="ulasim-list">
+
+        <h2>📋 Ulaşım ve Rota Listesi</h2>
+
+        <table id="ulasimTable">
+
+            <thead>
+            <tr>
+                <th>Plaka</th>
+                <th>Sürücü</th>
+                <th>Başlangıç</th>
+                <th>Varış</th>
+                <th>Planlanan Rota</th>
+                <th>Güncel Konum</th>
+                <th>Tahmini Süre</th>
+                <th>Mesafe</th>
+                <th>Yakıt</th>
+                <th>Rotadan Çıktı mı?</th>
+                <th>Koli / Kutu No</th>
+                <th>Ürün Alındı mı?</th>
+                <th>Teslim Edildi mi?</th>
+                <th>Rota Durumu</th>
+            </tr>
+            </thead>
+
+            <tbody id="ulasimTableBody"></tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

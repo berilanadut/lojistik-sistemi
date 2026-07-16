@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0">
+
+    <title>Stok Kontrol Sistemi</title>
+
+    <link rel="stylesheet" href="/style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Stok Kontrol Sistemi</h1>
+
+    <p class="subtitle">
+        Ürün, stok ve kritik seviye takibi
+    </p>
+
+    <div class="back-button">
+
+        <a href="/">
+            🏠 Ana Sayfaya Dön
+        </a>
+
+    </div>
+
+
+    <!-- ÜRÜN FORMU -->
+
+    <div class="urun-form">
+
+        <h2>📦 Ürün Bilgileri</h2>
+
+
+        <label for="urunKodu">
+            Ürün Kodu
+        </label>
+
+        <input
+                type="text"
+                id="urunKodu"
+                placeholder="Ürün Kodunu Giriniz">
+
+
+        <label for="urunAdi">
+            Ürün Adı
+        </label>
+
+        <input
+                type="text"
+                id="urunAdi"
+                placeholder="Ürün Adını Giriniz">
+
+
+        <label for="kategori">
+            Kategori
+        </label>
+
+        <input
+                type="text"
+                id="kategori"
+                placeholder="Kategori Giriniz">
+
+
+        <label for="marka">
+            Marka
+        </label>
+
+        <input
+                type="text"
+                id="marka"
+                placeholder="Marka Giriniz">
+
+
+        <label for="tedarikci">
+            Tedarikçi
+        </label>
+
+        <input
+                type="text"
+                id="tedarikci"
+                placeholder="Tedarikçi Giriniz">
+
+
+        <label for="depo">
+            Depo
+        </label>
+
+        <input
+                type="text"
+                id="depo"
+                placeholder="Depo Adını Giriniz">
+
+
+        <label for="rafNo">
+            Raf No
+        </label>
+
+        <input
+                type="text"
+                id="rafNo"
+                placeholder="Raf Numarasını Giriniz">
+
+
+        <label for="birim">
+            Birim
+        </label>
+
+        <select id="birim">
+
+            <option value="Adet">Adet</option>
+
+            <option value="Koli">Koli</option>
+
+            <option value="Palet">Palet</option>
+
+            <option value="Kutu">Kutu</option>
+
+        </select>
+
+
+        <label for="stokMiktari">
+            Stok Miktarı
+        </label>
+
+        <input
+                type="number"
+                id="stokMiktari"
+                min="0"
+                placeholder="Stok Miktarını Giriniz">
+
+
+        <label for="kritikLimit">
+            Kritik Limit
+        </label>
+
+        <input
+                type="number"
+                id="kritikLimit"
+                min="0"
+                placeholder="Kritik Limiti Giriniz">
+
+
+        <label for="girisTarihi">
+            Giriş Tarihi
+        </label>
+
+        <input
+                type="date"
+                id="girisTarihi">
+
+
+        <!-- ÜRÜN ARAMA -->
+
+        <hr>
+
+        <h2>🔍 Ürün Ara</h2>
+
+        <label for="urunKoduAra">
+            Aranacak Ürün Kodu
+        </label>
+
+        <input
+                type="text"
+                id="urunKoduAra"
+                placeholder="Aranacak ürün kodunu giriniz">
+
+        <button
+                type="button"
+                id="urunAraBtn">
+
+            🔎 Ürün Ara
+
+        </button>
+
+
+        <!-- İŞLEM BUTONLARI -->
+
+        <div class="button-group">
+
+            <button
+                    type="button"
+                    id="urunKaydetBtn">
+
+                💾 Kaydet
+
+            </button>
+
+            <button
+                    type="button"
+                    id="urunGuncelleBtn">
+
+                ✏️ Güncelle
+
+            </button>
+
+            <button
+                    type="button"
+                    id="urunSilBtn">
+
+                🗑️ Sil
+
+            </button>
+
+            <button
+                    type="button"
+                    id="urunTemizleBtn">
+
+                🧹 Temizle
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ÜRÜN LİSTESİ -->
+
+    <div class="urun-list">
+
+        <h2>📋 Ürün Listesi</h2>
+
+        <table id="urunTable">
+
+            <thead>
+
+            <tr>
+
+                <th>Ürün Kodu</th>
+
+                <th>Ürün Adı</th>
+
+                <th>Kategori</th>
+
+                <th>Marka</th>
+
+                <th>Tedarikçi</th>
+
+                <th>Depo</th>
+
+                <th>Raf No</th>
+
+                <th>Birim</th>
+
+                <th>Stok</th>
+
+                <th>Kritik Limit</th>
+
+                <th>Giriş Tarihi</th>
+
+                <th>Durum</th>
+
+                <th>İşlem</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody id="urunTableBody">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script src="/script.js"></script>
+
+</body>
+
+</html>
