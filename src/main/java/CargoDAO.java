@@ -148,6 +148,12 @@ public class CargoDAO {
     // =========================================
 
     public static boolean update(Cargo cargo) {
+        Cargo eskiCargo = findByKargoNo(cargo.getKargoNo());
+
+        if (eskiCargo != null) {
+            CargoGecmisDAO cargoGecmisDAO = new CargoGecmisDAO();
+            cargoGecmisDAO.gecmiseKaydet(eskiCargo);
+        }
 
         String sql = """
                 UPDATE cargo

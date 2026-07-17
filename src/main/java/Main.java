@@ -23,6 +23,7 @@ public class Main {
         Database.createUrunTable();
         Database.createUlasimTable();
         Database.createMesaiTable();
+        Database.createCargoGecmisTable();
 
         List<Cargo> kargolar = CargoDAO.findAll();
         List<Urun> urunler = UrunDAO.findAll();
@@ -74,11 +75,25 @@ public class Main {
                         "application/javascript; charset=UTF-8"
                 )
         );
+        server.createContext("/kargo-detay.js", exchange ->
+                dosyaGonder(
+                        exchange,
+                        "/kargo-detay.js",
+                        "application/javascript; charset=UTF-8"
+                )
+        );
 
         server.createContext("/kargo", exchange ->
                 dosyaGonder(
                         exchange,
                         "/kargo.html",
+                        "text/html; charset=UTF-8"
+                )
+        );
+        server.createContext("/kargo-detay", exchange ->
+                dosyaGonder(
+                        exchange,
+                        "/kargo-detay.html",
                         "text/html; charset=UTF-8"
                 )
         );
@@ -114,6 +129,10 @@ public class Main {
         server.createContext(
                 "/api/kargo",
                 Main::kargoApi
+        );
+        server.createContext(
+                "/api/kargo-gecmis",
+                Main::kargoGecmisApi
         );
 
         server.createContext(
@@ -348,6 +367,65 @@ public class Main {
                 405,
                 "text/plain; charset=UTF-8",
                 "Bu istek türü desteklenmiyor."
+        );
+    }
+    // =========================================
+// KARGO GEÇMİŞİ API
+// =========================================
+
+    private static void kargoGecmisApi(
+            HttpExchange exchange
+    ) throws IOException {
+
+        String method =
+                exchange.getRequestMethod();
+
+        if (!"GET".equals(method)) {
+
+            cevapGonder(
+                    exchange,
+                    405,
+                    "text/plain; charset=UTF-8",
+                    "Bu istek türü desteklenmiyor."
+            );
+
+            return;
+        }
+
+        String kargoNo =
+                sorguDegeriniAl(
+                        exchange,
+                        "kargoNo"
+                );
+
+        if (
+                kargoNo == null ||
+                        kargoNo.isBlank()
+        ) {
+
+            cevapGonder(
+                    exchange,
+                    400,
+                    "text/plain; charset=UTF-8",
+                    "Kargo numarası gönderilmelidir."
+            );
+
+            return;
+        }
+
+        CargoGecmisDAO cargoGecmisDAO =
+                new CargoGecmisDAO();
+
+        List<CargoGecmis> gecmisler =
+                cargoGecmisDAO.kargoGecmisiniGetir(
+                        kargoNo
+                );
+
+        cevapGonder(
+                exchange,
+                200,
+                "application/json; charset=UTF-8",
+                gson.toJson(gecmisler)
         );
     }
 

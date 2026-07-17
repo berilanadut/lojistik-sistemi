@@ -85,16 +85,7 @@
             id="teslimatSube"
             placeholder="Teslimat şubesini giriniz">
 
-    <label for="desi">Desi</label>
-    <input
-            type="number"
-            id="desi"
-            placeholder="Desi otomatik hesaplanacak"
-            readonly>
 
-    <button id="desiHesaplaBtn">
-      📦 Desi Hesapla
-    </button>
 
     <label for="agirlik">Ağırlık (kg)</label>
     <input
@@ -119,6 +110,19 @@
             type="number"
             id="yukseklik"
             placeholder="Yükseklik ölçüsünü giriniz">
+
+
+    <label for="desi">Desi</label>
+    <input
+            type="number"
+            id="desi"
+            placeholder="Desi otomatik hesaplanacak"
+            readonly>
+    <button id="desiHesaplaBtn">
+      📦 Desi Hesapla
+    </button>
+
+
 
     <label for="durum">Kargo Durumu</label>
     <select id="durum">
@@ -197,6 +201,8 @@
         <th>Veriliş</th>
         <th>Tahmini Teslim</th>
         <th>Teslim Tarihi</th>
+        <th>İşlem</th>
+
       </tr>
       </thead>
 
@@ -205,6 +211,15 @@
       </tbody>
 
     </table>
+
+    <div class="pagination" id="kargoPagination">
+      <button type="button" id="oncekiSayfaBtn">← Önceki</button>
+
+      <div id="sayfaNumaralari"></div>
+
+      <button type="button" id="sonrakiSayfaBtn">Sonraki →</button>
+    </div>
+
 
   </div>
 

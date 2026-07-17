@@ -396,6 +396,9 @@ if (silBtn) {
 // =========================================
 // VERİTABANINDAKİ KARGOLARI YÜKLE ve  GET
 // =========================================
+let aktifSayfa = 1;
+const kayitSayisi = 5;
+let toplamSayfa = 5;
 
 function kargolariYukle() {
 
@@ -413,6 +416,7 @@ function kargolariYukle() {
             return response.json();
         })
         .then(function (kargolar) {
+         toplamSayfa = Math.ceil(kargolar.length / kayitSayisi);
 
             const tablo =
                 document.getElementById("kargoTableBody");
@@ -423,24 +427,34 @@ function kargolariYukle() {
 
             tablo.innerHTML = "";
 
-            kargolar.forEach(function (kargo) {
+            const baslangic = (aktifSayfa - 1) * kayitSayisi;
+            const bitis = baslangic + kayitSayisi;
+            const gosterilecekKargolar = kargolar.slice(baslangic, bitis);
+
+            gosterilecekKargolar.forEach(function (kargo) {
 
                 const yeniSatir =
                     document.createElement("tr");
 
-                yeniSatir.innerHTML = `
-                    <td>${kargo.kargoNo || ""}</td>
-                    <td>${kargo.gonderici || ""}</td>
-                    <td>${kargo.alici || ""}</td>
-                    <td>${kargo.gondericiSube || ""}</td>
-                    <td>${kargo.teslimatSube || ""}</td>
-                    <td>${kargo.desi || ""}</td>
-                    <td>${kargo.agirlik || ""}</td>
-                    <td>${kargo.durum || ""}</td>
-                    <td>${kargo.verilisTarihi || ""}</td>
-                    <td>${kargo.tahminiTeslim || ""}</td>
-                    <td>${kargo.teslimTarihi || ""}</td>
-                `;
+               yeniSatir.innerHTML = `
+                   <td>
+                       <a href="/kargo-detay?kargoNo=${encodeURIComponent(kargo.kargoNo)}">
+                           ${kargo.kargoNo || ""}
+                       </a>
+                   </td>
+                   <td>${kargo.gonderici || ""}</td>
+                   <td>${kargo.alici || ""}</td>
+                   <td>${kargo.gondericiSube || ""}</td>
+                   <td>${kargo.teslimatSube || ""}</td>
+                   <td>${kargo.desi || ""}</td>
+                   <td>${kargo.agirlik || ""}</td>
+                   <td>${kargo.durum || ""}</td>
+                   <td>${kargo.verilisTarihi || ""}</td>
+                   <td>${kargo.tahminiTeslim || ""}</td>
+                   <td>${kargo.teslimTarihi || ""}</td>
+
+
+               `;
 
                 tablo.appendChild(yeniSatir);
             });
@@ -461,6 +475,36 @@ const kargoTableBody =
 if (kargoTableBody) {
     kargolariYukle();
 }
+// ===============================
+// KARGO SAYFALAMA
+// ===============================
+
+const oncekiSayfaBtn = document.getElementById("oncekiSayfaBtn");
+const sonrakiSayfaBtn = document.getElementById("sonrakiSayfaBtn");
+
+if (oncekiSayfaBtn) {
+    oncekiSayfaBtn.addEventListener("click", function () {
+
+        if (aktifSayfa > 1) {
+            aktifSayfa--;
+            kargolariYukle();
+        }
+
+    });
+}
+
+if (sonrakiSayfaBtn) {
+    sonrakiSayfaBtn.addEventListener("click", function () {
+
+
+
+               if (aktifSayfa < toplamSayfa) {
+                   aktifSayfa++;
+                   kargolariYukle();
+               }
+
+           });
+       }
 
 // ===============================
 // ÜRÜN BİLGİLERİNİ AL

@@ -816,6 +816,83 @@ box-shadow: 0 4px 12px rgba(0,0,0,0.12);
          width: 100%;
      }
  }
+ /* ===============================
+    SAYFALAMA
+ =============================== */
+
+ .pagination{
+     display:flex;
+     justify-content:center;
+     align-items:center;
+     gap:15px;
+     margin-top:25px;
+     flex-wrap:wrap;
+ }
+
+ .pagination button{
+     padding:10px 18px;
+     border:none;
+     border-radius:8px;
+     background:#1565c0;
+     color:white;
+     font-weight:bold;
+     cursor:pointer;
+     transition:.3s;
+ }
+
+ .pagination button:hover{
+     background:#0d47a1;
+ }
+
+ #sayfaNumaralari{
+     display:flex;
+     gap:8px;
+ }
+ /* ===============================
+    TABLO İŞLEM BUTONLARI
+ =============================== */
+
+ .edit-btn{
+
+     background:#2196F3;
+     color:white;
+     border:none;
+     padding:6px 10px;
+     border-radius:6px;
+     cursor:pointer;
+     margin-right:6px;
+ }
+
+ .edit-btn:hover{
+
+     background:#1565C0;
+ }
+
+ .delete-btn{
+
+     background:#f44336;
+     color:white;
+     border:none;
+     padding:6px 10px;
+     border-radius:6px;
+     cursor:pointer;
+ }
+
+ .delete-btn:hover{
+
+     background:#c62828;
+ }
+ .kargo-link{
+
+     color:#1565C0;
+     font-weight:bold;
+     cursor:pointer;
+ }
+
+ .kargo-link:hover{
+
+     text-decoration:underline;
+ }
 
 
 

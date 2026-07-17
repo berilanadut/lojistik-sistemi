@@ -185,4 +185,45 @@ public class Database {
 
         }
     }
+    public static void createCargoGecmisTable() {
+
+        String sql = """
+        CREATE TABLE IF NOT EXISTS cargo_gecmis(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            kargo_no TEXT NOT NULL,
+            gonderici TEXT NOT NULL,
+            alici TEXT NOT NULL,
+            gonderici_sube TEXT,
+            teslimat_sube TEXT,
+            desi REAL,
+            agirlik REAL,
+            durum TEXT,
+            verilis_tarihi TEXT,
+            tahmini_teslim TEXT,
+            teslim_tarihi TEXT,
+            plaka TEXT,
+            surucu TEXT,
+            takip_notu TEXT,
+            islem_turu TEXT,
+            degisiklik_tarihi TEXT
+        )
+        """;
+
+        try (
+                Connection connection = getConnection();
+                PreparedStatement statement =
+                        connection.prepareStatement(sql)
+        ) {
+
+            statement.executeUpdate();
+
+            System.out.println("Cargo Geçmiş tablosu hazır.");
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+    }
+
 }

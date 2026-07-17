@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Kargo Detayı</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>📦 Kargo Detayı</h1>
+
+  <p class="subtitle">
+    Güncel kargo bilgileri ve geçmiş değişiklik kayıtları
+  </p>
+
+  <div class="back-button">
+    <a href="/kargo">← Kargo Listesine Dön</a>
+  </div>
+
+  <!-- Güncel kargo bilgileri JavaScript ile buraya yazılacak -->
+  <div id="kargoDetay"></div>
+
+  <!-- Geçmiş işlemler bölümü -->
+  <div class="cargo-list">
+
+    <h2>📜 Geçmiş İşlemler</h2>
+
+    <table>
+
+      <thead>
+      <tr>
+        <th>Değişiklik Tarihi</th>
+        <th>İşlem Türü</th>
+        <th>Gönderici</th>
+        <th>Alıcı</th>
+        <th>Gönderici Şube</th>
+        <th>Teslimat Şubesi</th>
+        <th>Desi</th>
+        <th>Ağırlık</th>
+        <th>Durum</th>
+        <th>Veriliş Tarihi</th>
+        <th>Tahmini Teslim</th>
+        <th>Teslim Tarihi</th>
+        <th>Plaka</th>
+        <th>Sürücü</th>
+        <th>Takip Notu</th>
+      </tr>
+      </thead>
+
+      <tbody id="gecmisTableBody">
+      <!-- Eski kayıtlar daha sonra JavaScript ile buraya eklenecek -->
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<script src="kargo-detay.js"></script>
+
+</body>
+
+</html>
