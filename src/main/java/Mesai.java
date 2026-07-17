@@ -353,4 +353,67 @@ public class Mesai {
     public void setOdemeTarihi(String odemeTarihi) {
         this.odemeTarihi = odemeTarihi;
     }
+
+    public void ucretleriHesapla() {
+        if (this.aylikCalismaSaati <= 0) {
+            this.aylikCalismaSaati = 255;
+        }
+
+        if (this.mesaiKatsayisi <= 0) {
+            this.mesaiKatsayisi = 1.5;
+        }
+
+        this.normalSaatlikUcret = this.aylikUcret / this.aylikCalismaSaati;
+        this.mesaiSaatUcreti = this.normalSaatlikUcret *  this.mesaiKatsayisi;
+        this. toplamMesaiUcreti = this.toplamMesaiSaati * this.mesaiSaatUcreti;
+    }
+
+    public String verileriDogrula() {
+        if (this.sicilNo == null || this.sicilNo.trim().isEmpty()) {
+            return "Güvenlik İhlali: Sicil Numarası boş bırakılamaz";
+        }
+
+        if (this.adSoyad == null || this.adSoyad.trim().isEmpty()) {
+            return "Güvenlik İhlali: Personel Ad Soyad alanı zorunludur.";
+        }
+
+        if (this.toplamMesaiSaati < 0) {
+            return "Güvenlik İhlali: Sicil Numarası boş bırakılamaz";
+        }
+
+        if (this.aylikUcret <= 0) {
+            return "Güvenlik İhlali: Personel maaaşı 0 altında olamaz";
+        }
+
+
+
+        return null;
+    }
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

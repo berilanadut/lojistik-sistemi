@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lojistik Yönetim Sistemi</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div class="container">
@@ -15,6 +15,10 @@
     <p class="subtitle">
         Horoz Lojistik Operasyon Yönetim Paneli
     </p>
+
+    <button id="logoutBtn" style="background-color: red; color: white; padding: 5px 10px; border: none; cursor: pointer;">
+        Çıkış Yap
+    </button>
 
     <div class="menu">
 
@@ -42,11 +46,17 @@
             <p>Personel mesai kayıtları</p>
         </div>
 
+        <!-- Yönetici Paneli Kartı (Sadece Admin Görünümü için eklenebilir) -->
+        <div class="card" id="adminCard" style="display: none; border-top-color: #F59E0B;" onclick="window.location.href='/admin'">
+            <h2>⚙️ Yönetici Paneli</h2>
+            <p>Sisteme kayıt olmak isteyen yeni personelleri inceleyin, onay verin ve kullanıcı yetkilerini yönetin.</p>
+        </div>
+
     </div>
 
 </div>
 
-<script src="script.js"></script>
+<script src="js/main.js"></script>
 </body>
 
 </html>

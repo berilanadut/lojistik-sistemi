@@ -14,6 +14,8 @@ public class MesaiDAO {
 
     public static boolean save(Mesai mesai) {
 
+        mesai.ucretleriHesapla();
+
         String sql = """
                 INSERT INTO mesai(
                     mesai_no,
@@ -164,6 +166,8 @@ public class MesaiDAO {
     // =========================================
 
     public static boolean update(Mesai mesai) {
+
+        mesai.ucretleriHesapla();
 
         String sql = """
                 UPDATE mesai

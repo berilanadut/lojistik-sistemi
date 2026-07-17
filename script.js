@@ -1543,7 +1543,7 @@ if (ucretHesaplaBtn) {
         const toplamMesaiSaati = Number(document.getElementById("toplamMesaiSaati").value);
 
         if (aylikUcret <= 0 || aylikCalismaSaati <= 0 || toplamMesaiSaati <= 0) {
-            alert("Lütfen hesaplama için gerekli bilgileri giriniz.");
+            alert("Gireceğiniz değerler 0'ın altında olamaz!");
             return;
         }
 

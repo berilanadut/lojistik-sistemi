@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lojistik Sistemi - Yönetici Paneli</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container" style="width: 85%;">
+    <div class="back-button">
+        <a href="/">← Ana Menüye Dön</a>
+    </div>
+
+    <h1>Yönetici Onay Paneli</h1>
+    <p class="subtitle">Sisteme kayıt olmak isteyen ve onay bekleyen kullanıcılar</p>
+
+    <!-- Bekleyenler Listesi Tablosu -->
+    <div class="cargo-list">
+        <h2>Onay Bekleyen Personeller</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Kullanıcı No</th>
+                <th>Kullanıcı Adı</th>
+                <th>E-posta</th>
+                <th>Rol</th>
+                <th>İşlem</th>
+            </tr>
+            </thead>
+            <tbody id="bekleyenlerTablosu">
+            <!-- Dinamik olarak doldurulacak -->
+            </tbody>
+        </table>
+    </div>
+
+    <div id="mesaj" style="margin-top: 20px; text-align: center; font-weight: bold;"></div>
+</div>
+
+<script src ="js/admin.js"></script>
+<script src ="js/main.js"></script>
+</body>
+</html>

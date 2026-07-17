@@ -1,19 +1,33 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.PreparedStatement;
+import java.sql.*;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class Database {
 
     private static final String URL = "jdbc:sqlite:cargo.db";
+    private static final HikariDataSource dataSource;
 
+    // Statik blok: Sistem ayağa kalktığında bir kez çalışır ve havuzu doldurur
+    static {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(URL);
+
+        // HikariCP Performans ve Güvenlik Ayarları
+        config.setMaximumPoolSize(10); // Havuzda aynı anda bekleyecek maksimum bağlantı
+        config.setMinimumIdle(2);      // Kimse kullanmasa bile en az 2 bağlantı hep sıcak kalsın
+        config.setConnectionTimeout(30000); // 30 saniye içinde bağlantı alamazsa hata fırlat
+        config.setPoolName("Lojistik-SQLite-Havuzu");
+
+        dataSource = new HikariDataSource(config);
+    }
+
+    // Artık her istekte sıfırdan bağlantı kurulmuyor, havuzdan hazır 1 tane veriliyor
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL);
+        return dataSource.getConnection();
     }
 
     public static void createCargoTable() {
-
         String sql = """
                 CREATE TABLE IF NOT EXISTS cargo (
                     kargo_no TEXT PRIMARY KEY,
@@ -37,19 +51,14 @@ public class Database {
                 Connection connection = getConnection();
                 Statement statement = connection.createStatement()
         ) {
-
             statement.execute(sql);
-
             System.out.println("Cargo tablosu hazır.");
-
         } catch (SQLException e) {
-
             e.printStackTrace();
-
         }
     }
-    public static void createUrunTable() {
 
+    public static void createUrunTable() {
         String sql = """
             CREATE TABLE IF NOT EXISTS urun(
                 urun_kodu TEXT PRIMARY KEY,
@@ -68,19 +77,15 @@ public class Database {
 
         try (
                 Connection connection = getConnection();
-                PreparedStatement statement =
-                        connection.prepareStatement(sql)
+                PreparedStatement statement = connection.prepareStatement(sql)
         ) {
-
             statement.executeUpdate();
-
             System.out.println("Ürün tablosu hazır.");
-
         } catch (SQLException e) {
-
             e.printStackTrace();
         }
     }
+
     public static void createUlasimTable(){
         String sql = """
             CREATE TABLE IF NOT EXISTS ulasim (
@@ -108,31 +113,59 @@ public class Database {
                 aciklama TEXT
             )
             """;
+
         try (
                 Connection connection = getConnection();
-                PreparedStatement statement =
-                        connection.prepareStatement(sql)
+                PreparedStatement statement = connection.prepareStatement(sql)
         ) {
-
             statement.executeUpdate();
-
             System.out.println("Ulaşım tablosu hazır.");
-
         } catch (SQLException e) {
-
             e.printStackTrace();
+        }
+    }
 
-     }
+    // Kullanıcı Tablosu
 
+    public static void createKullaniciTable() {
+        String sql = """
+    CREATE TABLE IF NOT EXISTS kullanici(
+        kullanici_no INTEGER PRIMARY KEY AUTOINCREMENT,
+        kullanici_adi TEXT NOT NULL UNIQUE,
+        kullanici_rol TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE,
+        sifre TEXT NOT NULL,
+        aktif_token TEXT,
+        onay_durumu TEXT NOT NULL DEFAULT 'PENDING'
+    )
+    """;
 
-   }
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+
+            // --- ADMIN KONTROLÜ ---
+            // Eğer sistemde hiç kullanıcı yoksa, varsayılan bir Admin oluşturur ve durumu ONAYLI yapar.
+            String checkAdminSql = "SELECT COUNT(*) FROM kullanici";
+            try (ResultSet rs = stmt.executeQuery(checkAdminSql)) {
+                if (rs.next() && rs.getInt(1) == 0) {
+                    // Türkçe isimlendirilmiş değişken ve Türkçe yorum satırı
+                    String adminSifreHashi = SifrelemeYardimcisi.sifreyiHashle("12345", "admin");
+                    String insertAdmin = "INSERT INTO kullanici (kullanici_adi, kullanici_rol, email, sifre, onay_durumu) VALUES ('admin', 'ADMIN', 'admin@lojistik.com', '" + adminSifreHashi + "', 'APPROVED')";
+                    stmt.executeUpdate(insertAdmin);
+                    System.out.println("Varsayilan Admin (admin / 12345) basariyla olusturuldu.");
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("Kullanici tablosu olusturulurken hata: " + e.getMessage());
+        }
+    }
 
     // =========================================
     // MESAİ TABLOSU
     // =========================================
-
     public static void createMesaiTable() {
-
         String sql = """
         CREATE TABLE IF NOT EXISTS mesai(
             mesai_no TEXT PRIMARY KEY,
@@ -171,22 +204,16 @@ public class Database {
 
         try (
                 Connection connection = getConnection();
-                PreparedStatement statement =
-                        connection.prepareStatement(sql)
+                PreparedStatement statement = connection.prepareStatement(sql)
         ) {
-
             statement.executeUpdate();
-
             System.out.println("Mesai tablosu hazır.");
-
         } catch (SQLException e) {
-
             e.printStackTrace();
-
         }
     }
-    public static void createCargoGecmisTable() {
 
+    public static void createCargoGecmisTable() {
         String sql = """
         CREATE TABLE IF NOT EXISTS cargo_gecmis(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -211,19 +238,12 @@ public class Database {
 
         try (
                 Connection connection = getConnection();
-                PreparedStatement statement =
-                        connection.prepareStatement(sql)
+                PreparedStatement statement = connection.prepareStatement(sql)
         ) {
-
             statement.executeUpdate();
-
             System.out.println("Cargo Geçmiş tablosu hazır.");
-
         } catch (SQLException e) {
-
             e.printStackTrace();
-
         }
     }
-
 }
