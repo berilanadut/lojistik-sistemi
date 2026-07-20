@@ -893,7 +893,27 @@ box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 
      text-decoration:underline;
  }
+ .aktifSayfa {
+     background-color: white !important;
+     color: #1565c0 !important;
+     border: 3px solid #1565c0 !important;
+     font-weight: bold;
+     transform: scale(1.08);
+ }
 
+ .table-wrapper{
+ width: 100%;
+ overflow-x: auto;
+ }
+
+.table-wrapper table{
+min-width: 1600px;
+}
+.table-wrapper table th,
+.table-wrapper table td {
+    text-align: center;
+    vertical-align: middle;
+}
 
 
 

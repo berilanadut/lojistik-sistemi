@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class CargoGecmisDAO {
 
@@ -52,9 +54,12 @@ public class CargoGecmisDAO {
             preparedStatement.setString(13, cargo.getSurucu());
             preparedStatement.setString(14, cargo.getTakipNotu());
             preparedStatement.setString(15, "Güncellendi");
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+
             preparedStatement.setString(
                     16,
-                    java.time.LocalDateTime.now().toString()
+                    LocalDateTime.now().format(formatter)
             );
 
             preparedStatement.executeUpdate();

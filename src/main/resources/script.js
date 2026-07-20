@@ -398,7 +398,21 @@ if (silBtn) {
 // =========================================
 let aktifSayfa = 1;
 const kayitSayisi = 5;
-let toplamSayfa = 5;
+let toplamSayfa = 1;
+
+const durumFiltre = document.getElementById("durumFiltre");
+
+if (durumFiltre) {
+
+    durumFiltre.addEventListener("change", function () {
+
+        aktifSayfa = 1;
+
+        kargolariYukle();
+
+    });
+
+}
 
 function kargolariYukle() {
 
@@ -416,20 +430,58 @@ function kargolariYukle() {
             return response.json();
         })
         .then(function (kargolar) {
+         const secilenDurum = durumFiltre.value;
+
+         if (secilenDurum !== "Tümü") {
+
+             kargolar = kargolar.filter(function (kargo) {
+
+                 return kargo.durum === secilenDurum;
+
+             });
+
+         }
+
          toplamSayfa = Math.ceil(kargolar.length / kayitSayisi);
 
-            const tablo =
-                document.getElementById("kargoTableBody");
+            const tablo =document.getElementById("kargoTableBody");
+            const sayfaNumaralari = document.getElementById("sayfaNumaralari");
 
             if (!tablo) {
                 return;
             }
 
             tablo.innerHTML = "";
+            sayfaNumaralari.innerHTML = "";
 
             const baslangic = (aktifSayfa - 1) * kayitSayisi;
+
             const bitis = baslangic + kayitSayisi;
+
             const gosterilecekKargolar = kargolar.slice(baslangic, bitis);
+
+            for (let sayfa = 1; sayfa <= toplamSayfa; sayfa++) {
+
+                const sayfaBtn = document.createElement("button");
+                sayfaBtn.type = "button";
+
+                sayfaBtn.textContent = sayfa;
+
+                 if (sayfa === aktifSayfa) {
+                        sayfaBtn.classList.add("aktifSayfa");
+                    }
+
+                sayfaBtn.addEventListener("click", function () {
+
+                        aktifSayfa = sayfa;
+
+                        kargolariYukle();
+
+                    });
+
+
+                sayfaNumaralari.appendChild(sayfaBtn);
+            }
 
             gosterilecekKargolar.forEach(function (kargo) {
 
@@ -860,14 +912,49 @@ function urunleriYukle() {
             return response.json();
         })
         .then(function (urunler) {
-            const tablo =
-                document.getElementById("urunTableBody");
+        toplamStokSayfa =
+            Math.ceil(urunler.length /stokKayitSayisi);
+
+        const baslangic = (aktifStokSayfa - 1) * stokKayitSayisi;
+
+        const bitis =baslangic +  stokKayitSayisi;
+
+        const gosterilecekUrunler = urunler.slice(baslangic, bitis  );
+
+            const tablo = document.getElementById("urunTableBody");
+            const sayfaNumaralari =document.getElementById("stokSayfaNumaralari");
 
             if (!tablo) {
                 return;
             }
             tablo.innerHTML = "";
-            urunler.forEach(function (urun) {
+            sayfaNumaralari.innerHTML = "";
+
+            for (let sayfa = 1; sayfa <= toplamStokSayfa; sayfa++) {
+
+                const sayfaBtn =
+                    document.createElement("button");
+
+                sayfaBtn.type = "button";
+
+                sayfaBtn.textContent = sayfa;
+
+                if (sayfa === aktifStokSayfa) {
+                    sayfaBtn.classList.add("aktifSayfa");
+                }
+
+                sayfaBtn.addEventListener("click", function () {
+
+                    aktifStokSayfa = sayfa;
+
+                    urunleriYukle();
+
+                });
+
+                sayfaNumaralari.appendChild(sayfaBtn);
+
+            }
+           gosterilecekUrunler.forEach(function (urun) {
                 const durum =
                     urun.stokMiktari <= urun.kritikLimit
                         ? "🔴 Kritik Stok"
@@ -887,7 +974,19 @@ function urunleriYukle() {
                     <td>${urun.kritikLimit ?? ""}</td>
                     <td>${urun.girisTarihi || ""}</td>
                     <td>${durum}</td>
-                    <td>-</td> `;
+                    <td>
+                        <button onclick="stokEkleButonu('${urun.urunKodu}')">
+                            Stok Ekle
+                        </button>
+
+                        <button onclick="stokCikarButonu('${urun.urunKodu}')">
+                            Stok Çıkar
+                        </button>
+
+                       <button onclick="window.location.href='/stok-detay?urunKodu=${encodeURIComponent(urun.urunKodu)}'">
+                           Geçmiş
+                       </button>
+                    </td> `;
                 tablo.appendChild(satir);
             });
         })
@@ -906,6 +1005,106 @@ if (urunTableBody) {
 
     urunleriYukle();
 }
+// ===============================
+// STOK SAYFALAMA
+// ===============================
+
+let aktifStokSayfa = 1;
+
+const stokKayitSayisi = 5;
+
+let toplamStokSayfa = 1;
+
+const stokOncekiSayfaBtn =
+    document.getElementById("stokOncekiSayfaBtn");
+
+const stokSonrakiSayfaBtn =
+    document.getElementById("stokSonrakiSayfaBtn");
+
+if (stokOncekiSayfaBtn) {
+
+    stokOncekiSayfaBtn.addEventListener("click", function () {
+
+        if (aktifStokSayfa > 1) {
+
+            aktifStokSayfa--;
+
+            urunleriYukle();
+
+        }
+
+    });
+
+}
+
+if (stokSonrakiSayfaBtn) {
+
+    stokSonrakiSayfaBtn.addEventListener("click", function () {
+
+        if (aktifStokSayfa < toplamStokSayfa) {
+
+            aktifStokSayfa++;
+
+            urunleriYukle();
+
+        }
+
+    });
+
+}
+// =========================================
+// STOK EKLE
+// =========================================
+
+async function stokEkle(urunKodu, miktar) {
+    const cevap = await fetch(
+        `/api/stok-ekle?urunKodu=${encodeURIComponent(urunKodu)}&miktar=${miktar}`,
+        {
+            method: "POST" }
+    );
+    const mesaj = await cevap.text();
+    alert(mesaj);
+    urunleriYukle();
+}
+
+//===============================
+// STOK ÇIKAR
+//================================
+
+async function stokCikar(urunKodu, miktar){
+const cevap = await fetch(
+`/api/stok-cikar?urunKodu=${encodeURIComponent(urunKodu)}&miktar=${miktar}`,
+{
+method: "POST"}
+);
+const mesaj = await cevap.text();
+    alert(mesaj);
+    urunleriYukle();
+}
+
+function stokEkleButonu(urunKodu) {
+
+    const miktar = prompt("Eklenecek stok miktarını giriniz:");
+
+    if (miktar === null) {
+        return;
+    }
+
+    stokEkle(urunKodu, miktar);
+}
+
+function stokCikarButonu(urunKodu) {
+
+    const miktar = prompt("Çıkarılacak stok miktarını giriniz:");
+
+    if (miktar === null) {
+        return;
+    }
+
+    stokCikar(urunKodu, miktar);
+}
+
+
 // ===============================
 // ULAŞIM BİLGİLERİNİ AL
 // ===============================

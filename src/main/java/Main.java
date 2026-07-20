@@ -8,6 +8,8 @@ import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Main {
 
@@ -24,6 +26,7 @@ public class Main {
         Database.createUlasimTable();
         Database.createMesaiTable();
         Database.createCargoGecmisTable();
+        Database.createStokHareketTable();
 
         List<Cargo> kargolar = CargoDAO.findAll();
         List<Urun> urunler = UrunDAO.findAll();
@@ -82,6 +85,13 @@ public class Main {
                         "application/javascript; charset=UTF-8"
                 )
         );
+        server.createContext("/stok-detay.js", exchange ->
+                dosyaGonder(
+                        exchange,
+                        "/stok-detay.js",
+                        "application/javascript; charset=UTF-8"
+                )
+        );
 
         server.createContext("/kargo", exchange ->
                 dosyaGonder(
@@ -102,6 +112,13 @@ public class Main {
                 dosyaGonder(
                         exchange,
                         "/stok.html",
+                        "text/html; charset=UTF-8"
+                )
+        );
+        server.createContext("/stok-detay", exchange ->
+                dosyaGonder(
+                        exchange,
+                        "/stok-detay.html",
                         "text/html; charset=UTF-8"
                 )
         );
@@ -138,6 +155,20 @@ public class Main {
         server.createContext(
                 "/api/urun",
                 Main::urunApi
+        );
+        server.createContext(
+                "/api/stok-ekle",
+                Main::stokEkleApi
+        );
+
+        server.createContext(
+                "/api/stok-cikar",
+                Main::stokCikarApi
+        );
+
+        server.createContext(
+                "/api/stok-gecmis",
+                Main::stokGecmisApi
         );
 
         server.createContext(
@@ -370,8 +401,8 @@ public class Main {
         );
     }
     // =========================================
-// KARGO GEÇMİŞİ API
-// =========================================
+    // KARGO GEÇMİŞİ API
+    // =========================================
 
     private static void kargoGecmisApi(
             HttpExchange exchange
@@ -542,30 +573,93 @@ public class Main {
 
 
         // =========================================
-        // PUT: ÜRÜN GÜNCELLE
-        // =========================================
+// PUT: ÜRÜN GÜNCELLE
+// =========================================
 
         if ("PUT".equals(method)) {
 
             String gelenVeri =
                     istekGovdesiniOku(exchange);
 
-            Urun urun =
+            Urun yeniUrun =
                     gson.fromJson(
                             gelenVeri,
                             Urun.class
                     );
 
+            // Güncellemeden önce ürünün eski hâlini alıyoruz.
+            Urun eskiUrun =
+                    UrunDAO.findByUrunKodu(
+                            yeniUrun.getUrunKodu()
+                    );
+
+            if (eskiUrun == null) {
+
+                cevapGonder(
+                        exchange,
+                        404,
+                        "text/plain; charset=UTF-8",
+                        "Güncellenecek ürün bulunamadı."
+                );
+
+                return;
+            }
+
             boolean guncellendi =
-                    UrunDAO.update(urun);
+                    UrunDAO.update(yeniUrun);
 
             if (guncellendi) {
+
+                DateTimeFormatter formatter =
+                        DateTimeFormatter.ofPattern(
+                                "dd.MM.yyyy HH:mm:ss"
+                        );
+
+                String islemTarihi =
+                        LocalDateTime.now().format(formatter);
+
+                StokHareket hareket =
+                        new StokHareket();
+
+                // Güncellenmeden önceki ürün bilgileri
+                hareket.setUrunKodu(eskiUrun.getUrunKodu());
+                hareket.setUrunAdi(eskiUrun.getUrunAdi());
+                hareket.setKategori(eskiUrun.getKategori());
+                hareket.setMarka(eskiUrun.getMarka());
+                hareket.setTedarikci(eskiUrun.getTedarikci());
+                hareket.setDepo(eskiUrun.getDepo());
+                hareket.setRafNo(eskiUrun.getRafNo());
+                hareket.setBirim(eskiUrun.getBirim());
+                hareket.setStokMiktari(eskiUrun.getStokMiktari());
+                hareket.setKritikLimit(eskiUrun.getKritikLimit());
+                hareket.setGirisTarihi(eskiUrun.getGirisTarihi());
+
+                hareket.setIslemTuru("GÜNCELLEME ÖNCESİ");
+
+                hareket.setMiktar(
+                        Math.abs(
+                                yeniUrun.getStokMiktari()
+                                        - eskiUrun.getStokMiktari()
+                        )
+                );
+
+                hareket.setOncekiStok(
+                        eskiUrun.getStokMiktari()
+                );
+
+                hareket.setYeniStok(
+                        yeniUrun.getStokMiktari()
+                );
+
+                hareket.setIslemTarihi(islemTarihi);
+
+                StokHareketDAO.hareketiKaydet(hareket);
 
                 cevapGonder(
                         exchange,
                         200,
                         "text/plain; charset=UTF-8",
-                        "Ürün bilgileri güncellendi."
+                        "Ürün bilgileri güncellendi ve eski bilgiler geçmişe kaydedildi."
                 );
 
             } else {
@@ -574,7 +668,7 @@ public class Main {
                         exchange,
                         404,
                         "text/plain; charset=UTF-8",
-                        "Güncellenecek ürün bulunamadı."
+                        "Ürün güncellenemedi."
                 );
             }
 
@@ -634,6 +728,197 @@ public class Main {
                 405,
                 "text/plain; charset=UTF-8",
                 "Bu istek türü desteklenmiyor."
+        );
+    }
+
+    // =========================================
+    // STOK EKLE API
+    // =========================================
+
+    private static void stokEkleApi(HttpExchange exchange)
+            throws IOException {
+
+        if (!"POST".equals(exchange.getRequestMethod())) {
+
+            cevapGonder(
+                    exchange,
+                    405,
+                    "text/plain; charset=UTF-8",
+                    "Bu istek türü desteklenmiyor."
+            );
+
+            return;
+        }
+
+        String urunKodu =
+                sorguDegeriniAl(exchange, "urunKodu");
+
+        String miktarStr =
+                sorguDegeriniAl(exchange, "miktar");
+
+        if (urunKodu == null || miktarStr == null) {
+
+            cevapGonder(
+                    exchange,
+                    400,
+                    "text/plain; charset=UTF-8",
+                    "Ürün kodu ve miktar gönderilmelidir."
+            );
+
+            return;
+        }
+
+        int miktar = Integer.parseInt(miktarStr);
+
+        boolean basarili =
+                UrunDAO.stokEkle(
+                        urunKodu,
+                        miktar
+                );
+
+        if (basarili) {
+
+            cevapGonder(
+                    exchange,
+                    200,
+                    "text/plain; charset=UTF-8",
+                    "Stok başarıyla eklendi."
+            );
+
+        } else {
+
+            cevapGonder(
+                    exchange,
+                    400,
+                    "text/plain; charset=UTF-8",
+                    "Stok eklenemedi."
+            );
+        }
+    }
+
+// =========================================
+// STOK ÇIKAR API
+// =========================================
+
+    private static void stokCikarApi(HttpExchange exchange)
+            throws IOException {
+
+        if (!"POST".equals(exchange.getRequestMethod())) {
+
+            cevapGonder(
+                    exchange,
+                    405,
+                    "text/plain; charset=UTF-8",
+                    "Bu istek türü desteklenmiyor."
+            );
+
+            return;
+        }
+
+        String urunKodu =
+                sorguDegeriniAl(exchange, "urunKodu");
+
+        String miktarStr =
+                sorguDegeriniAl(exchange, "miktar");
+
+        if (urunKodu == null || miktarStr == null) {
+
+            cevapGonder(
+                    exchange,
+                    400,
+                    "text/plain; charset=UTF-8",
+                    "Ürün kodu ve miktar gönderilmelidir."
+            );
+
+            return;
+        }
+
+        int miktar =
+                Integer.parseInt(miktarStr);
+
+        boolean basarili =
+                UrunDAO.stokCikar(
+                        urunKodu,
+                        miktar
+                );
+
+        if (basarili) {
+
+            cevapGonder(
+                    exchange,
+                    200,
+                    "text/plain; charset=UTF-8",
+                    "Stok başarıyla çıkarıldı."
+            );
+
+        } else {
+
+            cevapGonder(
+                    exchange,
+                    400,
+                    "text/plain; charset=UTF-8",
+                    "Stok çıkarılamadı."
+            );
+        }
+    }
+
+// =========================================
+// STOK GEÇMİŞİ API
+// =========================================
+
+    private static void stokGecmisApi(
+            HttpExchange exchange
+    ) throws IOException {
+
+        String method =
+                exchange.getRequestMethod();
+
+        if (!"GET".equals(method)) {
+
+            cevapGonder(
+                    exchange,
+                    405,
+                    "text/plain; charset=UTF-8",
+                    "Bu istek türü desteklenmiyor."
+            );
+
+            return;
+        }
+
+        String urunKodu =
+                sorguDegeriniAl(
+                        exchange,
+                        "urunKodu"
+                );
+
+        if (
+                urunKodu == null ||
+                        urunKodu.isBlank()
+        ) {
+
+            cevapGonder(
+                    exchange,
+                    400,
+                    "text/plain; charset=UTF-8",
+                    "Ürün kodu gönderilmelidir."
+            );
+
+            return;
+        }
+
+        StokHareketDAO stokHareketDAO =
+                new StokHareketDAO();
+
+        List<StokHareket> hareketler =
+                stokHareketDAO.stokGecmisiniGetir(
+                        urunKodu
+                );
+
+        cevapGonder(
+                exchange,
+                200,
+                "application/json; charset=UTF-8",
+                gson.toJson(hareketler)
         );
     }
 

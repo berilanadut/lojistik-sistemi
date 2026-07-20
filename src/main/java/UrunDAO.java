@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class UrunDAO {
 
@@ -219,6 +221,121 @@ public class UrunDAO {
 
             return false;
         }
+    }
+    // ===============================
+    // STOK EKLE
+    // ===============================
+
+    public static boolean stokEkle(String urunKodu, int miktar) {
+
+        Urun urun = findByUrunKodu(urunKodu);
+
+        if (urun == null) {
+            return false;
+        }
+
+        if (miktar <= 0) {
+            return false;
+        }
+
+        int oncekiStok = urun.getStokMiktari();
+        int yeniStok = oncekiStok + miktar;
+
+        urun.setStokMiktari(yeniStok);
+
+        if (!update(urun)) {
+            return false;
+        }
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+
+        String islemTarihi =
+                LocalDateTime.now().format(formatter);
+
+        StokHareket hareket = new StokHareket();
+
+        hareket.setUrunKodu(urun.getUrunKodu());
+        hareket.setUrunAdi(urun.getUrunAdi());
+        hareket.setKategori(urun.getKategori());
+        hareket.setMarka(urun.getMarka());
+        hareket.setTedarikci(urun.getTedarikci());
+        hareket.setDepo(urun.getDepo());
+        hareket.setRafNo(urun.getRafNo());
+        hareket.setBirim(urun.getBirim());
+        hareket.setStokMiktari(yeniStok);
+        hareket.setKritikLimit(urun.getKritikLimit());
+        hareket.setGirisTarihi(urun.getGirisTarihi());
+
+        hareket.setIslemTuru("EKLEME");
+        hareket.setMiktar(miktar);
+        hareket.setOncekiStok(oncekiStok);
+        hareket.setYeniStok(yeniStok);
+        hareket.setIslemTarihi(islemTarihi);
+
+        StokHareketDAO.hareketiKaydet(hareket);
+
+        return true;
+    }
+    // ===============================
+    // STOK ÇIKAR
+    // ===============================
+
+    public static boolean stokCikar(String urunKodu, int miktar) {
+
+        Urun urun = findByUrunKodu(urunKodu);
+
+        if (urun == null) {
+            return false;
+        }
+
+        if (miktar <= 0) {
+            return false;
+        }
+
+        int oncekiStok = urun.getStokMiktari();
+
+        if (miktar > oncekiStok) {
+            return false;
+        }
+
+        int yeniStok = oncekiStok - miktar;
+
+        urun.setStokMiktari(yeniStok);
+
+        if (!update(urun)) {
+            return false;
+        }
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+
+        String islemTarihi =
+                LocalDateTime.now().format(formatter);
+
+        StokHareket hareket = new StokHareket();
+
+        hareket.setUrunKodu(urun.getUrunKodu());
+        hareket.setUrunAdi(urun.getUrunAdi());
+        hareket.setKategori(urun.getKategori());
+        hareket.setMarka(urun.getMarka());
+        hareket.setTedarikci(urun.getTedarikci());
+        hareket.setDepo(urun.getDepo());
+        hareket.setRafNo(urun.getRafNo());
+        hareket.setBirim(urun.getBirim());
+        hareket.setStokMiktari(yeniStok);
+        hareket.setKritikLimit(urun.getKritikLimit());
+        hareket.setGirisTarihi(urun.getGirisTarihi());
+
+        hareket.setIslemTuru(" ÇIKARMA ");
+        hareket.setMiktar(miktar);
+        hareket.setOncekiStok(oncekiStok);
+        hareket.setYeniStok(yeniStok);
+        hareket.setIslemTarihi(islemTarihi);
+
+        new StokHareketDAO().hareketiKaydet(hareket);
+
+        return true;
     }
 
 

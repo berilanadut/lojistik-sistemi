@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <title>Stok Detay</title>
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>Stok Hareket Geçmişi</h1>
+
+  <button onclick="window.location.href='/stok'">
+    ← Stok Sayfasına Dön
+  </button>
+
+  <br>
+  <div id="urunDetay"></div>
+
+  <br>
+
+  <div class="stok-filtre">
+
+    <label for="islemTuruFiltre">
+      İşlem Türü:
+    </label>
+
+    <select id="islemTuruFiltre">
+
+      <option value="Tümü">
+        Tümü
+      </option>
+
+      <option value="EKLEME">
+        EKLEME
+      </option>
+
+      <option value="ÇIKARMA">
+        ÇIKARMA
+      </option>
+
+      <option value="GÜNCELLEME ÖNCESİ">
+        GÜNCELLEME ÖNCESİ
+      </option>
+
+    </select>
+
+  </div>
+
+  <br>
+
+<div class="table-wrapper">
+  <table>
+
+    <thead>
+
+    <tr>
+
+      <th> İşlem Tarih</th>
+      <th>İşlem Türü</th>
+      <th>Ürün Adı</th>
+      <th>Kategori</th>
+      <th>Marka</th>
+      <th>Tedarikçi</th>
+      <th>Depo</th>
+      <th>Raf No</th>
+      <th>Birim</th>
+      <th>Stok Miktarı</th>
+      <th>Kritik Limit</th>
+      <th>Giriş Tarihi</th>
+      <th>İşlem Miktarı</th>
+      <th>Önceki Stok</th>
+      <th>Yeni Stok</th>
+
+    </tr>
+
+    </thead>
+
+    <tbody id="stokGecmisTableBody">
+
+    </tbody>
+
+  </table>
+
+</div>
+
+</div>
+
+<script src="stok-detay.js"></script>
+
+</body>
+
+</html>

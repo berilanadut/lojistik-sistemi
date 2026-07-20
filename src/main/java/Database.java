@@ -226,4 +226,45 @@ public class Database {
         }
     }
 
+    public static void createStokHareketTable() {
+
+        String sql = """
+    CREATE TABLE IF NOT EXISTS stok_hareket (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        urun_kodu TEXT NOT NULL,
+        urun_adi TEXT NOT NULL,
+        kategori TEXT NOT NULL,
+        marka TEXT,
+        tedarikci TEXT,
+        depo TEXT,
+        raf_no TEXT,
+        birim TEXT,
+        stok_miktari INTEGER NOT NULL,
+        kritik_limit INTEGER NOT NULL,
+        giris_tarihi TEXT,
+        islem_turu TEXT NOT NULL,
+        miktar INTEGER NOT NULL,
+        onceki_stok INTEGER NOT NULL,
+        yeni_stok INTEGER NOT NULL,
+        islem_tarihi TEXT NOT NULL
+    )
+    """;
+
+        try (
+                Connection connection = getConnection();
+                PreparedStatement statement =
+                        connection.prepareStatement(sql)
+        ) {
+
+            statement.executeUpdate();
+
+            System.out.println("Stok Hareket tablosu hazır.");
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+    }
+
 }
