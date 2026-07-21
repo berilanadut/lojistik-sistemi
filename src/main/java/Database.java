@@ -125,42 +125,7 @@ public class Database {
         }
     }
 
-    // Kullanıcı Tablosu
 
-    public static void createKullaniciTable() {
-        String sql = """
-    CREATE TABLE IF NOT EXISTS kullanici(
-        kullanici_no INTEGER PRIMARY KEY AUTOINCREMENT,
-        kullanici_adi TEXT NOT NULL UNIQUE,
-        kullanici_rol TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE,
-        sifre TEXT NOT NULL,
-        aktif_token TEXT,
-        onay_durumu TEXT NOT NULL DEFAULT 'PENDING'
-    )
-    """;
-
-        try (Connection conn = Database.getConnection();
-             Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
-
-            // --- ADMIN KONTROLÜ ---
-            // Eğer sistemde hiç kullanıcı yoksa, varsayılan bir Admin oluşturur ve durumu ONAYLI yapar.
-            String checkAdminSql = "SELECT COUNT(*) FROM kullanici";
-            try (ResultSet rs = stmt.executeQuery(checkAdminSql)) {
-                if (rs.next() && rs.getInt(1) == 0) {
-                    // Türkçe isimlendirilmiş değişken ve Türkçe yorum satırı
-                    String adminSifreHashi = SifrelemeYardimcisi.sifreyiHashle("12345", "admin");
-                    String insertAdmin = "INSERT INTO kullanici (kullanici_adi, kullanici_rol, email, sifre, onay_durumu) VALUES ('admin', 'ADMIN', 'admin@lojistik.com', '" + adminSifreHashi + "', 'APPROVED')";
-                    stmt.executeUpdate(insertAdmin);
-                    System.out.println("Varsayilan Admin (admin / 12345) basariyla olusturuldu.");
-                }
-            }
-
-        } catch (Exception e) {
-            System.out.println("Kullanici tablosu olusturulurken hata: " + e.getMessage());
-        }
-    }
 
     // =========================================
     // MESAİ TABLOSU
@@ -242,6 +207,40 @@ public class Database {
         ) {
             statement.executeUpdate();
             System.out.println("Cargo Geçmiş tablosu hazır.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void createStokHareketTable() {
+        String sql = """
+            CREATE TABLE IF NOT EXISTS stok_hareket (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                urun_kodu TEXT NOT NULL,
+                urun_adi TEXT,
+                kategori TEXT,
+                marka TEXT,
+                tedarikci TEXT,
+                depo TEXT,
+                raf_no TEXT,
+                birim TEXT,
+                stok_miktari INTEGER,
+                kritik_limit INTEGER,
+                giris_tarihi TEXT,
+                islem_turu TEXT NOT NULL,
+                miktar INTEGER NOT NULL,
+                onceki_stok INTEGER,
+                yeni_stok INTEGER,
+                islem_tarihi TEXT NOT NULL
+            )
+            """;
+
+        try (
+                Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+            statement.executeUpdate();
+            System.out.println("Stok Hareket tablosu hazır.");
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -2,259 +2,268 @@
 <html lang="tr">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Fazla Mesai Yönetimi</title>
+    <title>Fazla Mesai Yönetimi</title>
 
-  <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
 <div class="container">
 
-  <h1>⏰ Fazla Mesai Yönetimi</h1>
+    <h1>⏰ Fazla Mesai Yönetimi</h1>
 
-  <p class="subtitle">
-    Personel mesai süresi, ücret, onay ve ödeme takibi
-  </p>
+    <p class="subtitle">
+        Personel mesai süresi, ücret, onay ve ödeme takibi
+    </p>
 
-  <div class="back-button">
-    <a href="/">🏠 Ana Sayfaya Dön</a>
-  </div>
-
-
-  <div class="mesai-form">
-
-    <!-- PERSONEL BİLGİLERİ -->
-
-    <h2>👤 Personel Bilgileri</h2>
-
-    <label for="mesaiNo">Mesai No</label>
-    <input type="text" id="mesaiNo" placeholder="Örnek: M001">
-
-    <label for="sicilNo">Personel Sicil No</label>
-    <input type="text" id="sicilNo" placeholder="Personel sicil numarasını giriniz">
-
-    <label for="adSoyad">Ad Soyad</label>
-    <input type="text" id="adSoyad" placeholder="Personelin adını ve soyadını giriniz">
-
-    <label for="departman">Departman</label>
-    <select id="departman">
-      <option value="">Departman seçiniz</option>
-      <option value="Mobilya">Mobilya</option>
-      <option value="Yurt İçi Dağıtım ve Taşıma">Yurt İçi Dağıtım ve Taşıma</option>
-      <option value="Depo">Depo</option>
-      <option value="E-Ticaret">E-Ticaret</option>
-      <option value="Özel Müşteriler">Özel Müşteriler</option>
-      <option value="Yazılım">Yazılım</option>
-      <option value="Diğer">Diğer</option>
-    </select>
-
-    <label for="pozisyon">Görev / Pozisyon</label>
-    <input type="text" id="pozisyon" placeholder="Personelin görevini giriniz">
-
-
-    <!-- MESAİ BİLGİLERİ -->
-
-    <h2>🕒 Mesai Bilgileri</h2>
-
-    <label for="mesaiTarihi">Mesai Tarihi</label>
-    <input type="date" id="mesaiTarihi">
-
-    <label for="baslangicSaati">Fazla Mesai Başlangıç Saati</label>
-    <input type="time" id="baslangicSaati">
-
-    <label for="bitisSaati">Fazla Mesai Bitiş Saati</label>
-    <input type="time" id="bitisSaati">
-
-    <label for="molaSuresi">Mola Süresi (Dakika)</label>
-    <input type="number" id="molaSuresi" min="0" placeholder="Örnek: 30">
-
-    <label for="toplamMesaiSaati">Toplam Fazla Mesai Saati</label>
-    <input type="number" id="toplamMesaiSaati" step="0.01" readonly>
-
-    <button type="button" id="sureHesaplaBtn">
-      🕒 Mesai Süresini Hesapla
-    </button>
-
-    <label for="mesaiNedeni">Fazla Mesai Nedeni</label>
-    <select id="mesaiNedeni">
-      <option value="">Mesai nedeni seçiniz</option>
-      <option value="Yoğun İş Yükü">Yoğun İş Yükü</option>
-      <option value="Sevkiyat Gecikmesi">Sevkiyat Gecikmesi</option>
-      <option value="Teslimat İşlemi">Teslimat İşlemi</option>
-      <option value="Sayım İşlemi">Sayım İşlemi</option>
-      <option value="Teknik Arıza">Teknik Arıza</option>
-      <option value="Proje Çalışması">Proje Çalışması</option>
-      <option value="Acil Müşteri Talebi">Acil Müşteri Talebi</option>
-      <option value="Diğer">Diğer</option>
-    </select>
-
-    <label for="yapilanIs">Yapılan İş</label>
-    <input type="text" id="yapilanIs" placeholder="Fazla mesaide yapılan işi giriniz">
-
-    <label for="projeOperasyon">Proje / Operasyon Adı</label>
-    <input type="text" id="projeOperasyon" placeholder="Proje veya operasyon adını giriniz">
-
-    <label for="subeDepo">Şube / Depo</label>
-    <input type="text" id="subeDepo" placeholder="Şube veya depo bilgisini giriniz">
-
-    <label for="aciklama">Açıklama</label>
-    <textarea id="aciklama" rows="5" placeholder="Fazla mesai ile ilgili açıklama giriniz"></textarea>
-
-
-    <!-- ÜCRET HESAPLAMA -->
-
-    <h2>💰 Ücret Hesaplama</h2>
-
-    <label for="aylikUcret">Hesaplamaya Esas Aylık Ücret (TL)</label>
-    <input type="number" id="aylikUcret" min="0" step="0.01" placeholder="Örnek: 30000">
-
-    <label for="aylikCalismaSaati">Aylık Çalışma Saati</label>
-    <input type="number" id="aylikCalismaSaati" min="1" value="225">
-
-    <label for="mesaiKatsayisi">Fazla Mesai Katsayısı</label>
-    <select id="mesaiKatsayisi">
-      <option value="1">1,0</option>
-      <option value="1.5" selected>1,5</option>
-      <option value="2">2,0</option>
-      <option value="2.5">2,5</option>
-    </select>
-
-    <label for="normalSaatlikUcret">Normal Saatlik Ücret (TL)</label>
-    <input type="number" id="normalSaatlikUcret" step="0.01" readonly>
-
-    <label for="mesaiSaatUcreti">Fazla Mesai Saat Ücreti (TL)</label>
-    <input type="number" id="mesaiSaatUcreti" step="0.01" readonly>
-
-    <label for="toplamMesaiUcreti">Toplam Fazla Mesai Ücreti (TL)</label>
-    <input type="number" id="toplamMesaiUcreti" step="0.01" readonly>
-
-    <button type="button" id="ucretHesaplaBtn">
-      🧮 Ücreti Hesapla
-    </button>
-
-
-    <!-- OPERASYON KONTROL BİLGİLERİ -->
-
-    <h2>🚚 Operasyon Kontrol Bilgileri</h2>
-
-    <label for="rotaPlaniVarMi">Rota Planı Var mı?</label>
-    <select id="rotaPlaniVarMi">
-      <option value="Hayır">Hayır</option>
-      <option value="Evet">Evet</option>
-    </select>
-
-    <label for="siraliTeslimat">Sıralı Teslimat Yapıldı mı?</label>
-    <select id="siraliTeslimat">
-      <option value="Hayır">Hayır</option>
-      <option value="Evet">Evet</option>
-    </select>
-
-    <label for="teslimatSorunu">Teslimat Sorunu Girildi mi?</label>
-    <select id="teslimatSorunu">
-      <option value="Hayır">Hayır</option>
-      <option value="Evet">Evet</option>
-    </select>
-
-    <label for="yerindeKapatma">Yerinde Kapatma Yapıldı mı?</label>
-    <select id="yerindeKapatma">
-      <option value="Hayır">Hayır</option>
-      <option value="Evet">Evet</option>
-    </select>
-
-    <label for="irsaliyeAtfNo">İrsaliye / ATF No</label>
-    <input type="text" id="irsaliyeAtfNo" placeholder="İrsaliye veya ATF numarasını giriniz">
-
-
-    <!-- ONAY VE ÖDEME -->
-
-    <h2>✅ Onay ve Ödeme Bilgileri</h2>
-
-    <label for="yonetici">Yönetici</label>
-    <input type="text" id="yonetici" placeholder="Onay verecek yöneticinin adını giriniz">
-
-    <label for="onayDurumu">Onay Durumu</label>
-    <select id="onayDurumu">
-      <option value="Onay Bekliyor">Onay Bekliyor</option>
-      <option value="Onaylandı">Onaylandı</option>
-      <option value="Reddedildi">Reddedildi</option>
-      <option value="İptal Edildi">İptal Edildi</option>
-    </select>
-
-    <label for="onayTarihi">Onay Tarihi</label>
-    <input type="date" id="onayTarihi">
-
-    <label for="odemeDurumu">Ödeme Durumu</label>
-    <select id="odemeDurumu">
-      <option value="Ödeme Bekliyor">Ödeme Bekliyor</option>
-      <option value="Bordroya Aktarıldı">Bordroya Aktarıldı</option>
-      <option value="Ödendi">Ödendi</option>
-      <option value="Ödenmedi">Ödenmedi</option>
-    </select>
-
-    <label for="odemeTarihi">Ödeme Tarihi</label>
-    <input type="date" id="odemeTarihi">
-
-
-    <!-- İŞLEM BUTONLARI -->
-
-    <div class="button-group">
-      <button type="button" id="mesaiKaydetBtn">💾 Kaydet</button>
-      <button type="button" id="mesaiGuncelleBtn">✏️ Güncelle</button>
-      <button type="button" id="mesaiSilBtn">🗑️ Sil</button>
-      <button type="button" id="mesaiTemizleBtn">🧹 Temizle</button>
+    <div class="back-button">
+        <a href="/">🏠 Ana Sayfaya Dön</a>
     </div>
 
-  </div>
+
+    <div class="mesai-form">
+
+        <!-- PERSONEL BİLGİLERİ -->
+
+        <h2>👤 Personel Bilgileri</h2>
+
+        <label for="mesaiNo">Mesai No</label>
+        <input type="text" id="mesaiNo" placeholder="Örnek: M001">
+
+        <label for="sicilNo">Personel Sicil No</label>
+        <input type="text" id="sicilNo" placeholder="Personel sicil numarasını giriniz">
+
+        <label for="adSoyad">Ad Soyad</label>
+        <input type="text" id="adSoyad" placeholder="Personelin adını ve soyadını giriniz">
+
+        <label for="departman">Departman</label>
+        <select id="departman">
+            <option value="">Departman seçiniz</option>
+            <option value="Mobilya">Mobilya</option>
+            <option value="Yurt İçi Dağıtım ve Taşıma">Yurt İçi Dağıtım ve Taşıma</option>
+            <option value="Depo">Depo</option>
+            <option value="E-Ticaret">E-Ticaret</option>
+            <option value="Özel Müşteriler">Özel Müşteriler</option>
+            <option value="Yazılım">Yazılım</option>
+            <option value="Diğer">Diğer</option>
+        </select>
+
+        <label for="pozisyon">Görev / Pozisyon</label>
+        <input type="text" id="pozisyon" placeholder="Personelin görevini giriniz">
 
 
-  <!-- ARAMA BÖLÜMÜ -->
+        <!-- MESAİ BİLGİLERİ -->
 
-  <div class="mesai-search">
+        <h2>🕒 Mesai Bilgileri</h2>
 
-    <h2>🔍 Fazla Mesai Kaydı Ara</h2>
+        <label for="mesaiTarihi">Mesai Tarihi</label>
+        <input type="date" id="mesaiTarihi">
 
-    <label for="mesaiNoAra">Mesai No</label>
-    <input type="text" id="mesaiNoAra" placeholder="Aranacak mesai numarasını giriniz">
+        <label for="baslangicSaati">Fazla Mesai Başlangıç Saati</label>
+        <input type="time" id="baslangicSaati">
 
-    <button type="button" id="mesaiAraBtn">🔎 Ara</button>
+        <label for="bitisSaati">Fazla Mesai Bitiş Saati</label>
+        <input type="time" id="bitisSaati">
 
-  </div>
+        <label for="molaSuresi">Mola Süresi (Dakika)</label>
+        <input type="number" id="molaSuresi" min="0" placeholder="Örnek: 30">
+
+        <label for="toplamMesaiSaati">Toplam Fazla Mesai Saati</label>
+        <input type="number" id="toplamMesaiSaati" step="0.01" readonly>
+
+        <button type="button" id="sureHesaplaBtn">
+            🕒 Mesai Süresini Hesapla
+        </button>
+
+        <label for="mesaiNedeni">Fazla Mesai Nedeni</label>
+        <select id="mesaiNedeni">
+            <option value="">Mesai nedeni seçiniz</option>
+            <option value="Yoğun İş Yükü">Yoğun İş Yükü</option>
+            <option value="Sevkiyat Gecikmesi">Sevkiyat Gecikmesi</option>
+            <option value="Teslimat İşlemi">Teslimat İşlemi</option>
+            <option value="Sayım İşlemi">Sayım İşlemi</option>
+            <option value="Teknik Arıza">Teknik Arıza</option>
+            <option value="Proje Çalışması">Proje Çalışması</option>
+            <option value="Acil Müşteri Talebi">Acil Müşteri Talebi</option>
+            <option value="Diğer">Diğer</option>
+        </select>
+
+        <label for="yapilanIs">Yapılan İş</label>
+        <input type="text" id="yapilanIs" placeholder="Fazla mesaide yapılan işi giriniz">
+
+        <label for="projeOperasyon">Proje / Operasyon Adı</label>
+        <input type="text" id="projeOperasyon" placeholder="Proje veya operasyon adını giriniz">
+
+        <label for="subeDepo">Şube / Depo</label>
+        <input type="text" id="subeDepo" placeholder="Şube veya depo bilgisini giriniz">
+
+        <label for="aciklama">Açıklama</label>
+        <textarea id="aciklama" rows="5" placeholder="Fazla mesai ile ilgili açıklama giriniz"></textarea>
 
 
-  <!-- LİSTE BÖLÜMÜ -->
+        <!-- ÜCRET HESAPLAMA -->
 
-  <div class="mesai-list">
+        <h2>💰 Ücret Hesaplama</h2>
 
-    <h2>📋 Fazla Mesai Kayıtları</h2>
+        <label for="aylikUcret">Hesaplamaya Esas Aylık Ücret (TL)</label>
+        <input type="number" id="aylikUcret" min="0" step="0.01" placeholder="Örnek: 30000">
 
-    <table id="mesaiTable">
+        <label for="aylikCalismaSaati">Aylık Çalışma Saati</label>
+        <input type="number" id="aylikCalismaSaati" min="1" value="225">
 
-      <thead>
-      <tr>
-        <th>Mesai No</th>
-        <th>Sicil No</th>
-        <th>Ad Soyad</th>
-        <th>Departman</th>
-        <th>Tarih</th>
-        <th>Başlangıç</th>
-        <th>Bitiş</th>
-        <th>Toplam Saat</th>
-        <th>Katsayı</th>
-        <th>Toplam Ücret</th>
-        <th>Onay Durumu</th>
-        <th>Ödeme Durumu</th>
-      </tr>
-      </thead>
+        <label for="mesaiKatsayisi">Fazla Mesai Katsayısı</label>
+        <select id="mesaiKatsayisi">
+            <option value="1">1,0</option>
+            <option value="1.5" selected>1,5</option>
+            <option value="2">2,0</option>
+            <option value="2.5">2,5</option>
+        </select>
 
-      <tbody id="mesaiTableBody"></tbody>
+        <label for="normalSaatlikUcret">Normal Saatlik Ücret (TL)</label>
+        <input type="number" id="normalSaatlikUcret" step="0.01" readonly>
 
-    </table>
+        <label for="mesaiSaatUcreti">Fazla Mesai Saat Ücreti (TL)</label>
+        <input type="number" id="mesaiSaatUcreti" step="0.01" readonly>
 
-  </div>
+        <label for="toplamMesaiUcreti">Toplam Fazla Mesai Ücreti (TL)</label>
+        <input type="number" id="toplamMesaiUcreti" step="0.01" readonly>
+
+        <button type="button" id="ucretHesaplaBtn">
+            🧮 Ücreti Hesapla
+        </button>
+
+
+        <!-- OPERASYON KONTROL BİLGİLERİ -->
+
+        <h2>🚚 Operasyon Kontrol Bilgileri</h2>
+
+        <label for="rotaPlaniVarMi">Rota Planı Var mı?</label>
+        <select id="rotaPlaniVarMi">
+            <option value="Hayır">Hayır</option>
+            <option value="Evet">Evet</option>
+        </select>
+
+        <label for="siraliTeslimat">Sıralı Teslimat Yapıldı mı?</label>
+        <select id="siraliTeslimat">
+            <option value="Hayır">Hayır</option>
+            <option value="Evet">Evet</option>
+        </select>
+
+        <label for="teslimatSorunu">Teslimat Sorunu Girildi mi?</label>
+        <select id="teslimatSorunu">
+            <option value="Hayır">Hayır</option>
+            <option value="Evet">Evet</option>
+        </select>
+
+        <label for="yerindeKapatma">Yerinde Kapatma Yapıldı mı?</label>
+        <select id="yerindeKapatma">
+            <option value="Hayır">Hayır</option>
+            <option value="Evet">Evet</option>
+        </select>
+
+        <label for="irsaliyeAtfNo">İrsaliye / ATF No</label>
+        <input type="text" id="irsaliyeAtfNo" placeholder="İrsaliye veya ATF numarasını giriniz">
+
+
+        <!-- ONAY VE ÖDEME -->
+
+        <h2>✅ Onay ve Ödeme Bilgileri</h2>
+
+        <label for="yonetici">Yönetici</label>
+        <input type="text" id="yonetici" placeholder="Onay verecek yöneticinin adını giriniz">
+
+        <label for="onayDurumu">Onay Durumu</label>
+        <select id="onayDurumu">
+            <option value="Onay Bekliyor">Onay Bekliyor</option>
+            <option value="Onaylandı">Onaylandı</option>
+            <option value="Reddedildi">Reddedildi</option>
+            <option value="İptal Edildi">İptal Edildi</option>
+        </select>
+
+        <label for="onayTarihi">Onay Tarihi</label>
+        <input type="date" id="onayTarihi">
+
+        <label for="odemeDurumu">Ödeme Durumu</label>
+        <select id="odemeDurumu">
+            <option value="Ödeme Bekliyor">Ödeme Bekliyor</option>
+            <option value="Bordroya Aktarıldı">Bordroya Aktarıldı</option>
+            <option value="Ödendi">Ödendi</option>
+            <option value="Ödenmedi">Ödenmedi</option>
+        </select>
+
+        <label for="odemeTarihi">Ödeme Tarihi</label>
+        <input type="date" id="odemeTarihi">
+
+
+        <!-- İŞLEM BUTONLARI -->
+
+        <div class="button-group">
+            <button type="button" id="mesaiKaydetBtn">💾 Kaydet</button>
+            <button type="button" id="mesaiGuncelleBtn">✏️ Güncelle</button>
+            <button type="button" id="mesaiSilBtn">🗑️ Sil</button>
+            <button type="button" id="mesaiTemizleBtn">🧹 Temizle</button>
+        </div>
+
+    </div>
+
+
+    <!-- ARAMA BÖLÜMÜ -->
+
+    <div class="mesai-search">
+
+        <h2>🔍 Fazla Mesai Kaydı Ara</h2>
+
+        <label for="mesaiNoAra">Mesai No</label>
+        <input type="text" id="mesaiNoAra" placeholder="Aranacak mesai numarasını giriniz">
+
+        <button type="button" id="mesaiAraBtn">🔎 Ara</button>
+
+    </div>
+
+
+    <!-- LİSTE BÖLÜMÜ -->
+
+    <div class="mesai-list">
+
+        <h2>📋 Fazla Mesai Kayıtları</h2>
+
+        <table id="mesaiTable">
+
+            <thead>
+            <tr>
+                <th>Mesai No</th>
+                <th>Sicil No</th>
+                <th>Ad Soyad</th>
+                <th>Departman</th>
+                <th>Tarih</th>
+                <th>Başlangıç</th>
+                <th>Bitiş</th>
+                <th>Toplam Saat</th>
+                <th>Katsayı</th>
+                <th>Toplam Ücret</th>
+                <th>Onay Durumu</th>
+                <th>Ödeme Durumu</th>
+            </tr>
+            </thead>
+
+            <tbody id="mesaiTableBody"></tbody>
+
+        </table>
+
+        <div class="pagination-controls">
+            <button id="prevPageBtn">Önceki</button>
+            <span id="pageInfo">Sayfa 1 / 1</span>
+            <button id="nextPageBtn">Sonraki</button>
+            <span>Git:</span>
+            <input type="number" id="jumpPageInput" min="1">
+            <button id="jumpPageBtn">Git</button>
+        </div>
+
+    </div>
 
 </div>
 

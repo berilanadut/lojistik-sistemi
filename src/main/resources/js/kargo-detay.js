@@ -5,7 +5,9 @@
 const urlBilgileri = new URLSearchParams(window.location.search);
 const kargoNo = urlBilgileri.get("kargoNo");
 
-// ===============================
+let currentPage = 1;
+const recordsPerPage = 5;
+let filteredData = [];
 // KARGO DETAYINI GETİR
 // ===============================
 
@@ -114,62 +116,77 @@ function kargoGecmisiniGetir() {
 
             return response.json();
         })
-        .then(function (gecmisler) {
-
-            tabloGovdesi.innerHTML = "";
-
-            if (gecmisler.length === 0) {
-
-                tabloGovdesi.innerHTML = `
-                    <tr>
-                        <td colspan="15">
-                            Bu kargoya ait geçmiş kayıt bulunamadı.
-                        </td>
-                    </tr>
-                `;
-
-                return;
-            }
-
-            gecmisler.forEach(function (gecmis) {
-
-                tabloGovdesi.innerHTML += `
-                    <tr>
-                        <td>${gecmis.degisiklikTarihi || ""}</td>
-                        <td>${gecmis.islemTuru || ""}</td>
-                        <td>${gecmis.gonderici || ""}</td>
-                        <td>${gecmis.alici || ""}</td>
-                        <td>${gecmis.gondericiSube || ""}</td>
-                        <td>${gecmis.teslimatSube || ""}</td>
-                        <td>${gecmis.desi ?? ""}</td>
-                        <td>${gecmis.agirlik ?? ""}</td>
-                        <td>${gecmis.durum || ""}</td>
-                        <td>${gecmis.verilisTarihi || ""}</td>
-                        <td>${gecmis.tahminiTeslim || ""}</td>
-                        <td>${gecmis.teslimTarihi || ""}</td>
-                        <td>${gecmis.plaka || ""}</td>
-                        <td>${gecmis.surucu || ""}</td>
-                        <td>${gecmis.takipNotu || ""}</td>
-                    </tr>
-                `;
-            });
-        })
-        .catch(function (hata) {
-
-            console.error(
-                "Kargo geçmişi alınamadı:",
-                hata
-            );
-
-            tabloGovdesi.innerHTML = `
-                <tr>
-                    <td colspan="15">
-                        Kargo geçmişi alınamadı: ${hata.message}
-                    </td>
-                </tr>
-            `;
-        });
+    .then(function (gecmisler) {
+        filteredData = gecmisler;
+        currentPage = 1;
+        renderTable();
+    })
+    .catch(function (hata) {
+        console.error("Kargo geçmişi alınamadı:", hata);
+        document.getElementById("gecmisTableBody").innerHTML = `
+            <tr><td colspan="15">Kargo geçmişi alınamadı: ${hata.message}</td></tr>
+        `;
+    });
 }
+
+function renderTable() {
+    const tablo = document.getElementById("gecmisTableBody");
+    const pageInfo = document.getElementById("pageInfo");
+    if (!tablo) return;
+
+    if (filteredData.length === 0) {
+        tablo.innerHTML = `<tr><td colspan="15">Bu kargoya ait geçmiş kayıt bulunamadı.</td></tr>`;
+        if(pageInfo) pageInfo.textContent = "Sayfa 1 / 1";
+        return;
+    }
+
+    const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    if(pageInfo) pageInfo.textContent = "Sayfa " + currentPage + " / " + totalPages;
+
+    const startIdx = (currentPage - 1) * recordsPerPage;
+    const endIdx = startIdx + recordsPerPage;
+    const pageData = filteredData.slice(startIdx, endIdx);
+
+    tablo.innerHTML = "";
+    pageData.forEach(gecmis => {
+        const satir = document.createElement("tr");
+        satir.innerHTML = `
+            <td>${gecmis.degisiklikTarihi || ""}</td>
+            <td>${gecmis.islemTuru || ""}</td>
+            <td>${gecmis.gonderici || ""}</td>
+            <td>${gecmis.alici || ""}</td>
+            <td>${gecmis.gondericiSube || ""}</td>
+            <td>${gecmis.teslimatSube || ""}</td>
+            <td>${gecmis.desi ?? ""}</td>
+            <td>${gecmis.agirlik ?? ""}</td>
+            <td>${gecmis.durum || ""}</td>
+            <td>${gecmis.verilisTarihi || ""}</td>
+            <td>${gecmis.tahminiTeslim || ""}</td>
+            <td>${gecmis.teslimTarihi || ""}</td>
+            <td>${gecmis.plaka || ""}</td>
+            <td>${gecmis.surucu || ""}</td>
+            <td>${gecmis.takipNotu || ""}</td>
+        `;
+        tablo.appendChild(satir);
+    });
+}
+
+const prevBtn = document.getElementById("prevPageBtn");
+if (prevBtn) prevBtn.addEventListener("click", () => { if (currentPage > 1) { currentPage--; renderTable(); } });
+const nextBtn = document.getElementById("nextPageBtn");
+if (nextBtn) nextBtn.addEventListener("click", () => { const totalPages = Math.ceil(filteredData.length / recordsPerPage); if (currentPage < totalPages) { currentPage++; renderTable(); } });
+const jumpBtn = document.getElementById("jumpPageBtn");
+if (jumpBtn) jumpBtn.addEventListener("click", () => {
+    const jumpInput = document.getElementById("jumpPageInput").value;
+    const page = parseInt(jumpInput, 10);
+    const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+    if (!isNaN(page) && page >= 1 && page <= totalPages) { currentPage = page; renderTable(); }
+    else { alert("Lütfen 1 ile " + totalPages + " arasında geçerli bir sayfa numarası giriniz."); }
+});
+
 // ===============================
 // SAYFA AÇILINCA DETAYI GETİR
 // ===============================

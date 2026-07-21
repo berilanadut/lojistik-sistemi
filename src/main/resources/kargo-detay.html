@@ -2,65 +2,74 @@
 <html lang="tr">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Kargo Detayı</title>
+    <title>Kargo Detayı</title>
 
-  <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
 <div class="container">
 
-  <h1>📦 Kargo Detayı</h1>
+    <h1>📦 Kargo Detayı</h1>
 
-  <p class="subtitle">
-    Güncel kargo bilgileri ve geçmiş değişiklik kayıtları
-  </p>
+    <p class="subtitle">
+        Güncel kargo bilgileri ve geçmiş değişiklik kayıtları
+    </p>
 
-  <div class="back-button">
-    <a href="/kargo">← Kargo Listesine Dön</a>
-  </div>
+    <div class="back-button">
+        <a href="/kargo">← Kargo Listesine Dön</a>
+    </div>
 
-  <!-- Güncel kargo bilgileri JavaScript ile buraya yazılacak -->
-  <div id="kargoDetay"></div>
+    <!-- Güncel kargo bilgileri JavaScript ile buraya yazılacak -->
+    <div id="kargoDetay"></div>
 
-  <!-- Geçmiş işlemler bölümü -->
-  <div class="cargo-list">
+    <!-- Geçmiş işlemler bölümü -->
+    <div class="cargo-list">
 
-    <h2>📜 Geçmiş İşlemler</h2>
+        <h2>📜 Geçmiş İşlemler</h2>
 
-    <table>
+        <table>
 
-      <thead>
-      <tr>
-        <th>Değişiklik Tarihi</th>
-        <th>İşlem Türü</th>
-        <th>Gönderici</th>
-        <th>Alıcı</th>
-        <th>Gönderici Şube</th>
-        <th>Teslimat Şubesi</th>
-        <th>Desi</th>
-        <th>Ağırlık</th>
-        <th>Durum</th>
-        <th>Veriliş Tarihi</th>
-        <th>Tahmini Teslim</th>
-        <th>Teslim Tarihi</th>
-        <th>Plaka</th>
-        <th>Sürücü</th>
-        <th>Takip Notu</th>
-      </tr>
-      </thead>
+            <thead>
+            <tr>
+                <th>Değişiklik Tarihi</th>
+                <th>İşlem Türü</th>
+                <th>Gönderici</th>
+                <th>Alıcı</th>
+                <th>Gönderici Şube</th>
+                <th>Teslimat Şubesi</th>
+                <th>Desi</th>
+                <th>Ağırlık</th>
+                <th>Durum</th>
+                <th>Veriliş Tarihi</th>
+                <th>Tahmini Teslim</th>
+                <th>Teslim Tarihi</th>
+                <th>Plaka</th>
+                <th>Sürücü</th>
+                <th>Takip Notu</th>
+            </tr>
+            </thead>
 
-      <tbody id="gecmisTableBody">
-      <!-- Eski kayıtlar daha sonra JavaScript ile buraya eklenecek -->
-      </tbody>
+            <tbody id="gecmisTableBody">
+            <!-- Eski kayıtlar daha sonra JavaScript ile buraya eklenecek -->
+            </tbody>
 
-    </table>
+        </table>
 
-  </div>
+        <div class="pagination-controls">
+            <button id="prevPageBtn">Önceki</button>
+            <span id="pageInfo">Sayfa 1 / 1</span>
+            <button id="nextPageBtn">Sonraki</button>
+            <span>Git:</span>
+            <input type="number" id="jumpPageInput" min="1" style="width: 60px;">
+            <button id="jumpPageBtn">Git</button>
+        </div>
+
+    </div>
 
 </div>
 

@@ -2,6 +2,10 @@
 // FAZLA MESAİ İŞLEMLERİ
 // ===============================
 
+let currentPage = 1;
+const recordsPerPage = 5;
+let filteredData = [];
+
 const sureHesaplaBtn = document.getElementById("sureHesaplaBtn");
 if (sureHesaplaBtn) {
     sureHesaplaBtn.addEventListener("click", function () {
@@ -186,8 +190,7 @@ if (mesaiKaydetBtn) {
         fetch("/api/mesai", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": localStorage.getItem("token")
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(mesai)
         })
@@ -207,7 +210,7 @@ if (mesaiAraBtn) {
         }
         fetch("/api/mesai?mesaiNo=" + encodeURIComponent(mesaiNo), {
             method: "GET",
-            headers: { "Authorization": localStorage.getItem("token") }
+            headers: { }
         })
         .then(res => { if (!res.ok) return res.text().then(m => { throw new Error(m); }); return res.json(); })
         .then(mesai => { mesaiFormunuDoldur(mesai); alert("Mesai kaydı bulundu ve forma aktarıldı."); })
@@ -224,8 +227,7 @@ if (mesaiGuncelleBtn) {
         fetch("/api/mesai", {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": localStorage.getItem("token")
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(mesai)
         })
@@ -247,7 +249,7 @@ if (mesaiSilBtn) {
 
         fetch("/api/mesai?mesaiNo=" + encodeURIComponent(mesaiNo), {
             method: "DELETE",
-            headers: { "Authorization": localStorage.getItem("token") }
+            headers: { }
         })
         .then(res => res.text().then(msg => { if (!res.ok) throw new Error(msg); return msg; }))
         .then(msg => { alert(msg); mesaiFormunuTemizle(); mesaileriYukle(); })
@@ -266,34 +268,71 @@ if (mesaiTemizleBtn) {
 function mesaileriYukle() {
     fetch("/api/mesai", {
         method: "GET",
-        headers: { "Authorization": localStorage.getItem("token") }
+        headers: { }
     })
     .then(res => { if (!res.ok) throw new Error("Mesai kayıtları veritabanından alınamadı."); return res.json(); })
     .then(mesailer => {
-        const tablo = document.getElementById("mesaiTableBody");
-        if (!tablo) return;
-        tablo.innerHTML = "";
-        mesailer.forEach(mesai => {
-            const satir = document.createElement("tr");
-            satir.innerHTML = `
-                <td>${mesai.mesaiNo || ""}</td>
-                <td>${mesai.sicilNo || ""}</td>
-                <td>${mesai.adSoyad || ""}</td>
-                <td>${mesai.departman || ""}</td>
-                <td>${mesai.mesaiTarihi || ""}</td>
-                <td>${mesai.baslangicSaati || ""}</td>
-                <td>${mesai.bitisSaati || ""}</td>
-                <td>${mesai.toplamMesaiSaati ?? ""}</td>
-                <td>${mesai.mesaiKatsayisi ?? ""}</td>
-                <td>${mesai.toplamMesaiUcreti ?? ""}</td>
-                <td>${mesai.onayDurumu || ""}</td>
-                <td>${mesai.odemeDurumu || ""}</td>
-            `;
-            tablo.appendChild(satir);
-        });
+        filteredData = mesailer;
+        currentPage = 1;
+        renderTable();
     })
     .catch(err => console.error("Mesai kayıtları yüklenemedi:", err));
 }
 
+function renderTable() {
+    const tablo = document.getElementById("mesaiTableBody");
+    const pageInfo = document.getElementById("pageInfo");
+    if (!tablo) return;
+
+    if (filteredData.length === 0) {
+        tablo.innerHTML = `<tr><td colspan="15">Kayıt bulunamadı.</td></tr>`;
+        if(pageInfo) pageInfo.textContent = "Sayfa 1 / 1";
+        return;
+    }
+
+    const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    if(pageInfo) pageInfo.textContent = "Sayfa " + currentPage + " / " + totalPages;
+
+    const startIdx = (currentPage - 1) * recordsPerPage;
+    const endIdx = startIdx + recordsPerPage;
+    const pageData = filteredData.slice(startIdx, endIdx);
+
+    tablo.innerHTML = "";
+    pageData.forEach(mesai => {
+        const satir = document.createElement("tr");
+        satir.innerHTML = `
+            <td>${mesai.mesaiNo || ""}</td>
+            <td>${mesai.sicilNo || ""}</td>
+            <td>${mesai.adSoyad || ""}</td>
+            <td>${mesai.departman || ""}</td>
+            <td>${mesai.mesaiTarihi || ""}</td>
+            <td>${mesai.baslangicSaati || ""}</td>
+            <td>${mesai.bitisSaati || ""}</td>
+            <td>${mesai.toplamMesaiSaati ?? ""}</td>
+            <td>${mesai.mesaiKatsayisi ?? ""}</td>
+            <td>${mesai.toplamMesaiUcreti ?? ""}</td>
+            <td>${mesai.onayDurumu || ""}</td>
+            <td>${mesai.odemeDurumu || ""}</td>
+        `;
+        tablo.appendChild(satir);
+    });
+}
+
 const mesaiTableBody = document.getElementById("mesaiTableBody");
 if (mesaiTableBody) mesaileriYukle();
+
+const prevBtn = document.getElementById("prevPageBtn");
+if (prevBtn) prevBtn.addEventListener("click", () => { if (currentPage > 1) { currentPage--; renderTable(); } });
+const nextBtn = document.getElementById("nextPageBtn");
+if (nextBtn) nextBtn.addEventListener("click", () => { const totalPages = Math.ceil(filteredData.length / recordsPerPage); if (currentPage < totalPages) { currentPage++; renderTable(); } });
+const jumpBtn = document.getElementById("jumpPageBtn");
+if (jumpBtn) jumpBtn.addEventListener("click", () => {
+    const jumpInput = document.getElementById("jumpPageInput").value;
+    const page = parseInt(jumpInput, 10);
+    const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+    if (!isNaN(page) && page >= 1 && page <= totalPages) { currentPage = page; renderTable(); }
+    else { alert("Lütfen 1 ile " + totalPages + " arasında geçerli bir sayfa numarası giriniz."); }
+});

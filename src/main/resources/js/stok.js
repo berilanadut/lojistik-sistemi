@@ -2,6 +2,10 @@
 // ÜRÜN / STOK İŞLEMLERİ
 // ===============================
 
+let currentPage = 1;
+const recordsPerPage = 5;
+let filteredData = [];
+
 function urunBilgileriniAl() {
     return {
         urunKodu: document.getElementById("urunKodu").value.trim(),
@@ -68,8 +72,7 @@ if (urunKaydetBtn) {
         fetch("/api/urun", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": localStorage.getItem("token")
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(urun)
         })
@@ -89,7 +92,7 @@ if (urunAraBtn) {
         }
         fetch("/api/urun?urunKodu=" + encodeURIComponent(urunKodu), {
             method: "GET",
-            headers: { "Authorization": localStorage.getItem("token") }
+            headers: { }
         })
         .then(res => { if (!res.ok) return res.text().then(m => { throw new Error(m); }); return res.json(); })
         .then(urun => { urunFormunuDoldur(urun); alert("Ürün bulundu ve forma aktarıldı."); })
@@ -106,8 +109,7 @@ if (urunGuncelleBtn) {
         fetch("/api/urun", {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": localStorage.getItem("token")
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(urun)
         })
@@ -129,7 +131,7 @@ if (urunSilBtn) {
 
         fetch("/api/urun?urunKodu=" + encodeURIComponent(urunKodu), {
             method: "DELETE",
-            headers: { "Authorization": localStorage.getItem("token") }
+            headers: { }
         })
         .then(res => res.text().then(msg => { if (!res.ok) throw new Error(msg); return msg; }))
         .then(msg => { alert(msg); urunFormunuTemizle(); urunleriYukle(); })
@@ -148,36 +150,117 @@ if (urunTemizleBtn) {
 function urunleriYukle() {
     fetch("/api/urun", {
         method: "GET",
-        headers: { "Authorization": localStorage.getItem("token") }
+        headers: { }
     })
     .then(res => { if (!res.ok) throw new Error("Ürünler veritabanından alınamadı."); return res.json(); })
     .then(urunler => {
-        const tablo = document.getElementById("urunTableBody");
-        if (!tablo) return;
-        tablo.innerHTML = "";
-        urunler.forEach(urun => {
-            const durum = urun.stokMiktari <= urun.kritikLimit ? "🔴 Kritik Stok" : "🟢 Stok Yeterli";
-            const satir = document.createElement("tr");
-            satir.innerHTML = `
-                <td>${urun.urunKodu || ""}</td>
-                <td>${urun.urunAdi || ""}</td>
-                <td>${urun.kategori || ""}</td>
-                <td>${urun.marka || ""}</td>
-                <td>${urun.tedarikci || ""}</td>
-                <td>${urun.depo || ""}</td>
-                <td>${urun.rafNo || ""}</td>
-                <td>${urun.birim || ""}</td>
-                <td>${urun.stokMiktari ?? ""}</td>
-                <td>${urun.kritikLimit ?? ""}</td>
-                <td>${urun.girisTarihi || ""}</td>
-                <td>${durum}</td>
-                <td>-</td>
-            `;
-            tablo.appendChild(satir);
-        });
+        filteredData = urunler;
+        currentPage = 1;
+        renderTable();
     })
     .catch(err => console.error("Ürünler yüklenemedi:", err));
 }
 
+function renderTable() {
+    const tablo = document.getElementById("urunTableBody");
+    const pageInfo = document.getElementById("pageInfo");
+    if (!tablo) return;
+
+    if (filteredData.length === 0) {
+        tablo.innerHTML = `<tr><td colspan="15">Kayıt bulunamadı.</td></tr>`;
+        if(pageInfo) pageInfo.textContent = "Sayfa 1 / 1";
+        return;
+    }
+
+    const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    if(pageInfo) pageInfo.textContent = "Sayfa " + currentPage + " / " + totalPages;
+
+    const startIdx = (currentPage - 1) * recordsPerPage;
+    const endIdx = startIdx + recordsPerPage;
+    const pageData = filteredData.slice(startIdx, endIdx);
+
+    tablo.innerHTML = "";
+    pageData.forEach(urun => {
+        const durum = urun.stokMiktari <= urun.kritikLimit ? "🔴 Kritik Stok" : "🟢 Stok Yeterli";
+        const satir = document.createElement("tr");
+        satir.innerHTML = `
+            <td>${urun.urunKodu || ""}</td>
+            <td>${urun.urunAdi || ""}</td>
+            <td>${urun.kategori || ""}</td>
+            <td>${urun.marka || ""}</td>
+            <td>${urun.tedarikci || ""}</td>
+            <td>${urun.depo || ""}</td>
+            <td>${urun.rafNo || ""}</td>
+            <td>${urun.birim || ""}</td>
+            <td>${urun.stokMiktari ?? ""}</td>
+            <td>${urun.kritikLimit ?? ""}</td>
+            <td>${urun.girisTarihi || ""}</td>
+            <td>${durum}</td>
+            <td>
+                <button onclick="window.location.href='/stok-detay?urunKodu=${encodeURIComponent(urun.urunKodu)}'">
+                    🔍 Detay
+                </button>
+                <button onclick="stokEkle('${urun.urunKodu}')">➕ Ekle</button>
+                <button onclick="stokCikar('${urun.urunKodu}')">➖ Çıkar</button>
+            </td>
+        `;
+        tablo.appendChild(satir);
+    });
+}
+
+const prevBtn = document.getElementById("prevPageBtn");
+if (prevBtn) prevBtn.addEventListener("click", () => { if (currentPage > 1) { currentPage--; renderTable(); } });
+const nextBtn = document.getElementById("nextPageBtn");
+if (nextBtn) nextBtn.addEventListener("click", () => { const totalPages = Math.ceil(filteredData.length / recordsPerPage); if (currentPage < totalPages) { currentPage++; renderTable(); } });
+const jumpBtn = document.getElementById("jumpPageBtn");
+if (jumpBtn) jumpBtn.addEventListener("click", () => {
+    const jumpInput = document.getElementById("jumpPageInput").value;
+    const page = parseInt(jumpInput, 10);
+    const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+    if (!isNaN(page) && page >= 1 && page <= totalPages) { currentPage = page; renderTable(); }
+    else { alert("Lütfen 1 ile " + totalPages + " arasında geçerli bir sayfa numarası giriniz."); }
+});
+
 const urunTableBody = document.getElementById("urunTableBody");
 if (urunTableBody) urunleriYukle();
+
+window.stokEkle = function(urunKodu) {
+    const miktarStr = prompt("Eklenecek stok miktarını giriniz:");
+    if (!miktarStr) return;
+    const miktar = parseInt(miktarStr, 10);
+    if (isNaN(miktar) || miktar <= 0) {
+        alert("Lütfen geçerli pozitif bir sayı giriniz.");
+        return;
+    }
+    fetch("/api/stok-ekle?urunKodu=" + encodeURIComponent(urunKodu) + "&miktar=" + miktar, {
+        method: "POST"
+    })
+    .then(res => res.text().then(msg => { if (!res.ok) throw new Error(msg); return msg; }))
+    .then(msg => {
+        alert(msg);
+        urunleriYukle();
+    })
+    .catch(err => alert("Hata: " + err.message));
+};
+
+window.stokCikar = function(urunKodu) {
+    const miktarStr = prompt("Çıkarılacak stok miktarını giriniz:");
+    if (!miktarStr) return;
+    const miktar = parseInt(miktarStr, 10);
+    if (isNaN(miktar) || miktar <= 0) {
+        alert("Lütfen geçerli pozitif bir sayı giriniz.");
+        return;
+    }
+    fetch("/api/stok-cikar?urunKodu=" + encodeURIComponent(urunKodu) + "&miktar=" + miktar, {
+        method: "POST"
+    })
+    .then(res => res.text().then(msg => { if (!res.ok) throw new Error(msg); return msg; }))
+    .then(msg => {
+        alert(msg);
+        urunleriYukle();
+    })
+    .catch(err => alert("Hata: " + err.message));
+};

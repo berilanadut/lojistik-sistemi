@@ -2,6 +2,10 @@
 // ULAŞIM / ROTA İŞLEMLERİ
 // ===============================
 
+let currentPage = 1;
+const recordsPerPage = 5;
+let filteredData = [];
+
 function ulasimBilgileriniAl() {
     return {
         plaka: document.getElementById("plaka").value.trim(),
@@ -103,8 +107,7 @@ if (ulasimKaydetBtn) {
         fetch("/api/ulasim", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": localStorage.getItem("token")
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(ulasim)
         })
@@ -124,7 +127,7 @@ if (ulasimAraBtn) {
         }
         fetch("/api/ulasim?plaka=" + encodeURIComponent(plaka), {
             method: "GET",
-            headers: { "Authorization": localStorage.getItem("token") }
+            headers: { }
         })
         .then(res => { if (!res.ok) return res.text().then(m => { throw new Error(m); }); return res.json(); })
         .then(ulasim => { ulasimFormunuDoldur(ulasim); alert("Ulaşım kaydı bulundu ve forma aktarıldı."); })
@@ -141,8 +144,7 @@ if (ulasimGuncelleBtn) {
         fetch("/api/ulasim", {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": localStorage.getItem("token")
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(ulasim)
         })
@@ -164,7 +166,7 @@ if (ulasimSilBtn) {
 
         fetch("/api/ulasim?plaka=" + encodeURIComponent(plaka), {
             method: "DELETE",
-            headers: { "Authorization": localStorage.getItem("token") }
+            headers: { }
         })
         .then(res => res.text().then(msg => { if (!res.ok) throw new Error(msg); return msg; }))
         .then(msg => { alert(msg); ulasimFormunuTemizle(); ulasimlariYukle(); })
@@ -175,36 +177,73 @@ if (ulasimSilBtn) {
 function ulasimlariYukle() {
     fetch("/api/ulasim", {
         method: "GET",
-        headers: { "Authorization": localStorage.getItem("token") }
+        headers: { }
     })
     .then(res => { if (!res.ok) throw new Error("Ulaşım kayıtları veritabanından alınamadı."); return res.json(); })
     .then(ulasimlar => {
-        const tablo = document.getElementById("ulasimTableBody");
-        if (!tablo) return;
-        tablo.innerHTML = "";
-        ulasimlar.forEach(ulasim => {
-            const satir = document.createElement("tr");
-            satir.innerHTML = `
-                <td>${ulasim.plaka || ""}</td>
-                <td>${ulasim.surucu || ""}</td>
-                <td>${ulasim.baslangic || ""}</td>
-                <td>${ulasim.varis || ""}</td>
-                <td>${ulasim.rota || ""}</td>
-                <td>${ulasim.guncelKonum || ""}</td>
-                <td>${ulasim.tahminiSure ?? ""}</td>
-                <td>${ulasim.toplamMesafe ?? ""}</td>
-                <td>${ulasim.yakit ?? ""}</td>
-                <td>${ulasim.rotadanCikti || ""}</td>
-                <td>${ulasim.koliNo || ""}</td>
-                <td>${ulasim.teslimAlindi || ""}</td>
-                <td>${ulasim.teslimEdildi || ""}</td>
-                <td>${ulasim.rotaDurumu || ""}</td>
-            `;
-            tablo.appendChild(satir);
-        });
+        filteredData = ulasimlar;
+        currentPage = 1;
+        renderTable();
     })
     .catch(err => console.error("Ulaşım kayıtları yüklenemedi:", err));
 }
 
+function renderTable() {
+    const tablo = document.getElementById("ulasimTableBody");
+    const pageInfo = document.getElementById("pageInfo");
+    if (!tablo) return;
+
+    if (filteredData.length === 0) {
+        tablo.innerHTML = `<tr><td colspan="15">Kayıt bulunamadı.</td></tr>`;
+        if(pageInfo) pageInfo.textContent = "Sayfa 1 / 1";
+        return;
+    }
+
+    const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    if(pageInfo) pageInfo.textContent = "Sayfa " + currentPage + " / " + totalPages;
+
+    const startIdx = (currentPage - 1) * recordsPerPage;
+    const endIdx = startIdx + recordsPerPage;
+    const pageData = filteredData.slice(startIdx, endIdx);
+
+    tablo.innerHTML = "";
+    pageData.forEach(ulasim => {
+        const satir = document.createElement("tr");
+        satir.innerHTML = `
+            <td>${ulasim.plaka || ""}</td>
+            <td>${ulasim.surucu || ""}</td>
+            <td>${ulasim.baslangic || ""}</td>
+            <td>${ulasim.varis || ""}</td>
+            <td>${ulasim.rota || ""}</td>
+            <td>${ulasim.guncelKonum || ""}</td>
+            <td>${ulasim.tahminiSure ?? ""}</td>
+            <td>${ulasim.toplamMesafe ?? ""}</td>
+            <td>${ulasim.yakit ?? ""}</td>
+            <td>${ulasim.rotadanCikti || ""}</td>
+            <td>${ulasim.koliNo || ""}</td>
+            <td>${ulasim.teslimAlindi || ""}</td>
+            <td>${ulasim.teslimEdildi || ""}</td>
+            <td>${ulasim.rotaDurumu || ""}</td>
+        `;
+        tablo.appendChild(satir);
+    });
+}
+
 const ulasimTableBody = document.getElementById("ulasimTableBody");
 if (ulasimTableBody) ulasimlariYukle();
+
+const prevBtn = document.getElementById("prevPageBtn");
+if (prevBtn) prevBtn.addEventListener("click", () => { if (currentPage > 1) { currentPage--; renderTable(); } });
+const nextBtn = document.getElementById("nextPageBtn");
+if (nextBtn) nextBtn.addEventListener("click", () => { const totalPages = Math.ceil(filteredData.length / recordsPerPage); if (currentPage < totalPages) { currentPage++; renderTable(); } });
+const jumpBtn = document.getElementById("jumpPageBtn");
+if (jumpBtn) jumpBtn.addEventListener("click", () => {
+    const jumpInput = document.getElementById("jumpPageInput").value;
+    const page = parseInt(jumpInput, 10);
+    const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+    if (!isNaN(page) && page >= 1 && page <= totalPages) { currentPage = page; renderTable(); }
+    else { alert("Lütfen 1 ile " + totalPages + " arasında geçerli bir sayfa numarası giriniz."); }
+});

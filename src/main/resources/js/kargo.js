@@ -111,8 +111,7 @@ if (kaydetBtn) {
         fetch("/api/kargo", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": localStorage.getItem("token")
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(kargo)
         })
@@ -139,7 +138,7 @@ if (araBtn) {
         }
         fetch("/api/kargo?kargoNo=" + encodeURIComponent(arananKargoNo), {
             method: "GET",
-            headers: { "Authorization": localStorage.getItem("token") }
+            headers: { }
         })
         .then(response => {
             if (!response.ok) return response.text().then(m => { throw new Error(m); });
@@ -162,8 +161,7 @@ if (guncelleBtn) {
         fetch("/api/kargo", {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": localStorage.getItem("token")
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(kargo)
         })
@@ -192,7 +190,7 @@ if (silBtn) {
 
         fetch("/api/kargo?kargoNo=" + encodeURIComponent(kargoNo), {
             method: "DELETE",
-            headers: { "Authorization": localStorage.getItem("token") }
+            headers: { }
         })
         .then(response => response.text().then(mesaj => {
             if (!response.ok) throw new Error(mesaj);
@@ -208,69 +206,94 @@ if (silBtn) {
 }
 
 // Sayfalama ve Listeleme
-let aktifSayfa = 1;
-const kayitSayisi = 5;
-let toplamSayfa = 5;
+let currentPage = 1;
+const recordsPerPage = 5;
+let filteredData = [];
+
+const durumFiltre = document.getElementById("durumFiltre");
+if (durumFiltre) {
+    durumFiltre.addEventListener("change", function () {
+        currentPage = 1;
+        kargolariYukle();
+    });
+}
 
 function kargolariYukle() {
     fetch("/api/kargo", {
         method: "GET",
-        headers: { "Authorization": localStorage.getItem("token") }
+        headers: { }
     })
     .then(response => {
         if (!response.ok) throw new Error("Kargolar veritabanından alınamadı.");
         return response.json();
     })
     .then(kargolar => {
-        toplamSayfa = Math.ceil(kargolar.length / kayitSayisi);
-        const tablo = document.getElementById("kargoTableBody");
-        if (!tablo) return;
-
-        tablo.innerHTML = "";
-        const baslangic = (aktifSayfa - 1) * kayitSayisi;
-        const gosterilecekKargolar = kargolar.slice(baslangic, baslangic + kayitSayisi);
-
-        gosterilecekKargolar.forEach(kargo => {
-            const yeniSatir = document.createElement("tr");
-            yeniSatir.innerHTML = `
-                <td><a href="/kargo-detay?kargoNo=${encodeURIComponent(kargo.kargoNo)}">${kargo.kargoNo || ""}</a></td>
-                <td>${kargo.gonderici || ""}</td>
-                <td>${kargo.alici || ""}</td>
-                <td>${kargo.gondericiSube || ""}</td>
-                <td>${kargo.teslimatSube || ""}</td>
-                <td>${kargo.desi || ""}</td>
-                <td>${kargo.agirlik || ""}</td>
-                <td>${kargo.durum || ""}</td>
-                <td>${kargo.verilisTarihi || ""}</td>
-                <td>${kargo.tahminiTeslim || ""}</td>
-                <td>${kargo.teslimTarihi || ""}</td>
-            `;
-            tablo.appendChild(yeniSatir);
-        });
+        const durumFiltre = document.getElementById("durumFiltre");
+        if (durumFiltre && durumFiltre.value !== "Tümü") {
+            const secilenDurum = durumFiltre.value;
+            filteredData = kargolar.filter(kargo => kargo.durum === secilenDurum);
+        } else {
+            filteredData = kargolar;
+        }
+        currentPage = 1;
+        renderTable();
     })
     .catch(hata => console.error("Kargolar yüklenemedi:", hata));
+}
+
+function renderTable() {
+    const tablo = document.getElementById("kargoTableBody");
+    const pageInfo = document.getElementById("pageInfo");
+    if (!tablo) return;
+
+    if (filteredData.length === 0) {
+        tablo.innerHTML = `<tr><td colspan="15">Kayıt bulunamadı.</td></tr>`;
+        if(pageInfo) pageInfo.textContent = "Sayfa 1 / 1";
+        return;
+    }
+
+    const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    if(pageInfo) pageInfo.textContent = "Sayfa " + currentPage + " / " + totalPages;
+
+    const startIdx = (currentPage - 1) * recordsPerPage;
+    const endIdx = startIdx + recordsPerPage;
+    const pageData = filteredData.slice(startIdx, endIdx);
+
+    tablo.innerHTML = "";
+    pageData.forEach(kargo => {
+        const yeniSatir = document.createElement("tr");
+        yeniSatir.innerHTML = `
+            <td><a href="/kargo-detay?kargoNo=${encodeURIComponent(kargo.kargoNo)}">${kargo.kargoNo || ""}</a></td>
+            <td>${kargo.gonderici || ""}</td>
+            <td>${kargo.alici || ""}</td>
+            <td>${kargo.gondericiSube || ""}</td>
+            <td>${kargo.teslimatSube || ""}</td>
+            <td>${kargo.desi || ""}</td>
+            <td>${kargo.agirlik || ""}</td>
+            <td>${kargo.durum || ""}</td>
+            <td>${kargo.verilisTarihi || ""}</td>
+            <td>${kargo.tahminiTeslim || ""}</td>
+            <td>${kargo.teslimTarihi || ""}</td>
+        `;
+        tablo.appendChild(yeniSatir);
+    });
 }
 
 const kargoTableBody = document.getElementById("kargoTableBody");
 if (kargoTableBody) kargolariYukle();
 
-const oncekiSayfaBtn = document.getElementById("oncekiSayfaBtn");
-const sonrakiSayfaBtn = document.getElementById("sonrakiSayfaBtn");
-
-if (oncekiSayfaBtn) {
-    oncekiSayfaBtn.addEventListener("click", function () {
-        if (aktifSayfa > 1) {
-            aktifSayfa--;
-            kargolariYukle();
-        }
-    });
-}
-
-if (sonrakiSayfaBtn) {
-    sonrakiSayfaBtn.addEventListener("click", function () {
-        if (aktifSayfa < toplamSayfa) {
-            aktifSayfa++;
-            kargolariYukle();
-        }
-    });
-}
+const prevBtn = document.getElementById("prevPageBtn");
+if (prevBtn) prevBtn.addEventListener("click", () => { if (currentPage > 1) { currentPage--; renderTable(); } });
+const nextBtn = document.getElementById("nextPageBtn");
+if (nextBtn) nextBtn.addEventListener("click", () => { const totalPages = Math.ceil(filteredData.length / recordsPerPage); if (currentPage < totalPages) { currentPage++; renderTable(); } });
+const jumpBtn = document.getElementById("jumpPageBtn");
+if (jumpBtn) jumpBtn.addEventListener("click", () => {
+    const jumpInput = document.getElementById("jumpPageInput").value;
+    const page = parseInt(jumpInput, 10);
+    const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+    if (!isNaN(page) && page >= 1 && page <= totalPages) { currentPage = page; renderTable(); }
+    else { alert("Lütfen 1 ile " + totalPages + " arasında geçerli bir sayfa numarası giriniz."); }
+});

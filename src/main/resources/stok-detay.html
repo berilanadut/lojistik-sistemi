@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <title>Stok Detay</title>
+
+  <link rel="stylesheet" href="/css/style.css">
+
+<body>
+
+<div class="container">
+
+  <h1>Stok Hareket Geçmişi</h1>
+
+  <button onclick="window.location.href='/stok'">
+    ← Stok Sayfasına Dön
+  </button>
+
+  <br>
+  <div id="urunDetay"></div>
+
+  <br>
+
+  <div class="stok-filtre">
+
+    <label for="islemTuruFiltre">
+      İşlem Türü:
+    </label>
+
+    <select id="islemTuruFiltre">
+
+      <option value="Tümü">
+        Tümü
+      </option>
+
+      <option value="EKLEME">
+        EKLEME
+      </option>
+
+      <option value="ÇIKARMA">
+        ÇIKARMA
+      </option>
+
+      <option value="GÜNCELLEME ÖNCESİ">
+        GÜNCELLEME ÖNCESİ
+      </option>
+
+    </select>
+
+  </div>
+
+  <br>
+
+<div class="urun-list">
+  <table>
+
+    <thead>
+
+    <tr>
+
+      <th> İşlem Tarih</th>
+      <th>İşlem Türü</th>
+      <th>Ürün Adı</th>
+      <th>Kategori</th>
+      <th>Marka</th>
+      <th>Tedarikçi</th>
+      <th>Depo</th>
+      <th>Raf No</th>
+      <th>Birim</th>
+      <th>Stok Miktarı</th>
+      <th>Kritik Limit</th>
+      <th>Giriş Tarihi</th>
+      <th>İşlem Miktarı</th>
+      <th>Önceki Stok</th>
+      <th>Yeni Stok</th>
+
+    </tr>
+
+    </thead>
+
+    <tbody id="stokGecmisTableBody">
+
+    </tbody>
+
+  </table>
+
+  <div class="pagination-controls">
+    <button id="prevPageBtn">Önceki</button>
+    <span id="pageInfo">Sayfa 1 / 1</span>
+    <button id="nextPageBtn">Sonraki</button>
+    <span>Git:</span>
+    <input type="number" id="jumpPageInput" min="1" style="width: 60px;">
+    <button id="jumpPageBtn">Git</button>
+  </div>
+
+</div>
+
+</div>
+
+<script src="/js/stok-detay.js"></script>
+
+</body>
+
+</html>
