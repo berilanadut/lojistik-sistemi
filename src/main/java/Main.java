@@ -27,6 +27,8 @@ public class Main {
         Database.createMesaiTable();
         Database.createCargoGecmisTable();
         Database.createStokHareketTable();
+        Database.createUlasimGecmisTable();
+        Database.createUlasimUrunTable();
 
         List<Cargo> kargolar = CargoDAO.findAll();
         List<Urun> urunler = UrunDAO.findAll();
@@ -92,6 +94,13 @@ public class Main {
                         "application/javascript; charset=UTF-8"
                 )
         );
+        server.createContext("/ulasim-detay.js", exchange ->
+                dosyaGonder(
+                        exchange,
+                        "/ulasim-detay.js",
+                        "application/javascript; charset=UTF-8"
+                )
+        );
 
         server.createContext("/kargo", exchange ->
                 dosyaGonder(
@@ -127,6 +136,13 @@ public class Main {
                 dosyaGonder(
                         exchange,
                         "/ulasim.html",
+                        "text/html; charset=UTF-8"
+                )
+        );
+        server.createContext("/ulasim-detay", exchange ->
+                dosyaGonder(
+                        exchange,
+                        "/ulasim-detay.html",
                         "text/html; charset=UTF-8"
                 )
         );
@@ -174,6 +190,14 @@ public class Main {
         server.createContext(
                 "/api/ulasim",
                 Main::ulasimApi
+        );
+        server.createContext(
+                "/api/ulasim-gecmis",
+                Main::ulasimGecmisApi
+        );
+        server.createContext(
+                "/api/ulasim-urun",
+                Main::ulasimUrunApi
         );
         server.createContext(
                 "/api/mesai",
@@ -573,8 +597,8 @@ public class Main {
 
 
         // =========================================
-// PUT: ÜRÜN GÜNCELLE
-// =========================================
+        // PUT: ÜRÜN GÜNCELLE
+        // =========================================
 
         if ("PUT".equals(method)) {
 
@@ -1130,8 +1154,274 @@ public class Main {
         );
     }
     // =========================================
-// MESAİ API
+    // ULAŞIM GEÇMİŞİ API
+    // =========================================
+
+    private static void ulasimGecmisApi(
+            HttpExchange exchange
+    ) throws IOException {
+
+        String method =
+                exchange.getRequestMethod();
+
+        if (!"GET".equals(method)) {
+
+            cevapGonder(
+                    exchange,
+                    405,
+                    "text/plain; charset=UTF-8",
+                    "Bu istek türü desteklenmiyor."
+            );
+
+            return;
+        }
+
+        String plaka =
+                sorguDegeriniAl(
+                        exchange,
+                        "plaka"
+                );
+
+        if (
+                plaka == null ||
+                        plaka.isBlank()
+        ) {
+
+            cevapGonder(
+                    exchange,
+                    400,
+                    "text/plain; charset=UTF-8",
+                    "Araç plakası gönderilmelidir."
+            );
+
+            return;
+        }
+
+        UlasimGecmisDAO ulasimGecmisDAO =
+                new UlasimGecmisDAO();
+
+        List<UlasimGecmis> gecmisler =
+                ulasimGecmisDAO.ulasimGecmisiniGetir(
+                        plaka
+                );
+
+        cevapGonder(
+                exchange,
+                200,
+                "application/json; charset=UTF-8",
+                gson.toJson(gecmisler)
+        );
+    }
+
+    private static void ulasimUrunApi(
+            HttpExchange exchange
+    ) throws IOException {
+
+        String method =
+                exchange.getRequestMethod();
+
+        String plaka =
+                sorguDegeriniAl(
+                        exchange,
+                        "plaka"
+                );
+        String idStr =
+                sorguDegeriniAl(
+                        exchange,
+                        "id"
+                );
+
+        // =========================================
+        // POST: ARACA ÜRÜN EKLE
+        // =========================================
+
+        if ("POST".equals(method)) {
+
+            String gelenVeri =
+                    istekGovdesiniOku(exchange);
+
+            UlasimUrun urun =
+                    gson.fromJson(
+                            gelenVeri,
+                            UlasimUrun.class
+                    );
+
+            UlasimUrunDAO dao =
+                    new UlasimUrunDAO();
+
+            try {
+
+                dao.urunEkle(urun);
+
+                cevapGonder(
+                        exchange,
+                        200,
+                        "text/plain; charset=UTF-8",
+                        "Ürün araca eklendi."
+                );
+
+            } catch (IllegalArgumentException e) {
+
+                cevapGonder(
+                        exchange,
+                        400,
+                        "text/plain; charset=UTF-8",
+                        e.getMessage()
+                );
+
+            }
+
+            return;
+        }
+        //==========================================
+        //GET:PLAKAYA AİT ÜRÜNLERİ GİR
+        //==========================================
+
+        if ("GET".equals(method)) {
+
+            if (
+                    plaka == null ||
+                            plaka.isBlank()
+            ) {
+
+                cevapGonder(
+                        exchange,
+                        400,
+                        "text/plain; charset=UTF-8",
+                        "Araç plakası gönderilmelidir."
+                );
+
+                return;
+            }
+
+            UlasimUrunDAO dao =
+                    new UlasimUrunDAO();
+
+            List<UlasimUrun> urunler =
+                    dao.plakayaGoreUrunleriGetir(plaka);
+
+            cevapGonder(
+                    exchange,
+                    200,
+                    "application/json; charset=UTF-8",
+                    gson.toJson(urunler)
+            );
+
+            return;
+        }
+        // =========================================
+// PUT: ÜRÜN GÜNCELLE
 // =========================================
+
+        if ("PUT".equals(method)) {
+
+            String gelenVeri =
+                    istekGovdesiniOku(exchange);
+
+            UlasimUrun urun =
+                    gson.fromJson(
+                            gelenVeri,
+                            UlasimUrun.class
+                    );
+
+            UlasimUrunDAO dao =
+                    new UlasimUrunDAO();
+
+            boolean guncellendi =
+                    dao.urunGuncelle(urun);
+
+            if (guncellendi) {
+
+                cevapGonder(
+                        exchange,
+                        200,
+                        "text/plain; charset=UTF-8",
+                        "Ürün güncellendi."
+                );
+
+            } else {
+
+                cevapGonder(
+                        exchange,
+                        404,
+                        "text/plain; charset=UTF-8",
+                        "Güncellenecek ürün bulunamadı."
+                );
+
+            }
+
+            return;
+        }
+// =========================================
+// DELETE: ARAÇTAN ÜRÜN SİL
+// =========================================
+        if ( "DELETE".equals(method)){
+            if (
+                    idStr == null || idStr.isBlank()
+            ){
+                cevapGonder(
+                        exchange,
+                        400,
+                        "text/plain; charset=UTF-8",
+                        "Silmek için ürün id değeri gönderilmelidir."
+
+                );
+                return;
+            }
+            int id;
+            try{
+                id = Integer.parseInt(idStr);
+
+            }catch (NumberFormatException e){
+                cevapGonder(
+                        exchange,
+                        400,
+                        "text/plain; charset=UTF-8",
+                        "Ürün id değeri sayı olmalıdır."
+                );
+
+                return;
+
+            }
+            UlasimUrunDAO dao = new UlasimUrunDAO();
+            boolean silindi =
+                    dao.urunSil(id);
+
+            if (silindi) {
+
+                cevapGonder(
+                        exchange,
+                        200,
+                        "text/plain; charset=UTF-8",
+                        "Ürün araçtan silindi."
+                );
+
+            } else {
+
+                cevapGonder(
+                        exchange,
+                        404,
+                        "text/plain; charset=UTF-8",
+                        "Silinecek ürün bulunamadı."
+                );
+
+            }
+
+            return;
+        }
+
+        cevapGonder(
+                exchange,
+                405,
+                "text/plain; charset=UTF-8",
+                "Bu istek türü desteklenmiyor."
+        );
+    }
+
+
+    // =========================================
+    // MESAİ API
+    // =========================================
 
     private static void mesaiApi(
             HttpExchange exchange

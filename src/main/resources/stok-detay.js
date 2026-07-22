@@ -162,7 +162,14 @@ function stokGecmisiniGetir() {
                 hareketler =
                     hareketler.filter(function (hareket) {
 
-                        return hareket.islemTuru === secilenIslem;
+       //sağında solunda boşluk varsa sil (trim görevi)
+       // abc ve ABC yi aynı farz et (toLocaleUpperCase("tr-TR")) görevi
+                       return (hareket.islemTuru || "")
+                           .trim()
+                           .toLocaleUpperCase("tr-TR") ===
+                           secilenIslem
+                               .trim()
+                               .toLocaleUpperCase("tr-TR");
 
                     });
 

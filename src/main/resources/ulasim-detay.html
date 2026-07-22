@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Ulaşım Detayı</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>🚚 Ulaşım Detayı</h1>
+
+  <!-- =============================== -->
+  <!-- GÜNCEL ULAŞIM BİLGİLERİ -->
+  <!-- =============================== -->
+
+  <div class="card">
+
+    <h2>Güncel Ulaşım Bilgileri</h2>
+
+    <table class="detayTablo">
+
+      <tr>
+        <th>Plaka</th>
+        <td id="dPlaka"></td>
+      </tr>
+
+      <tr>
+        <th>Sürücü</th>
+        <td id="dSurucu"></td>
+      </tr>
+
+      <tr>
+        <th>Başlangıç</th>
+        <td id="dBaslangic"></td>
+      </tr>
+
+      <tr>
+        <th>Varış</th>
+        <td id="dVaris"></td>
+      </tr>
+
+      <tr>
+        <th>Rota</th>
+        <td id="dRota"></td>
+      </tr>
+
+      <tr>
+        <th>Güncel Konum</th>
+        <td id="dGuncelKonum"></td>
+      </tr>
+
+      <tr>
+        <th>Başlangıç Zamanı</th>
+        <td id="dBaslangicZamani"></td>
+      </tr>
+
+      <tr>
+        <th>Tahmini Süre</th>
+        <td id="dTahminiSure"></td>
+      </tr>
+
+      <tr>
+        <th>Toplam Mesafe</th>
+        <td id="dToplamMesafe"></td>
+      </tr>
+
+      <tr>
+        <th>Yakıt</th>
+        <td id="dYakit"></td>
+      </tr>
+
+      <tr>
+        <th>Rotadan Çıktı mı?</th>
+        <td id="dRotadanCikti"></td>
+      </tr>
+
+      <tr>
+        <th>Ürün Teslim Alındı mı?</th>
+        <td id="dTeslimAlindi"></td>
+      </tr>
+
+      <tr>
+        <th>Koli / Kutu No</th>
+        <td id="dKoliNo"></td>
+      </tr>
+
+      <tr>
+        <th>Teslim Alma Zamanı</th>
+        <td id="dTeslimAlmaZamani"></td>
+      </tr>
+
+      <tr>
+        <th>Teslim Alan Kişi</th>
+        <td id="dTeslimAlan"></td>
+      </tr>
+
+      <tr>
+        <th>Teslim Alınan Firma</th>
+        <td id="dTeslimAlinanFirma"></td>
+      </tr>
+
+      <tr>
+        <th>Teslim Edildi mi?</th>
+        <td id="dTeslimEdildi"></td>
+      </tr>
+
+      <tr>
+        <th>Teslim Zamanı</th>
+        <td id="dTeslimZamani"></td>
+      </tr>
+
+      <tr>
+        <th>Teslim Alan Müşteri</th>
+        <td id="dMusteri"></td>
+      </tr>
+
+      <tr>
+        <th>Teslim Onay Kodu</th>
+        <td id="dOnayKodu"></td>
+      </tr>
+
+      <tr>
+        <th>Rota Durumu</th>
+        <td id="dRotaDurumu"></td>
+      </tr>
+
+      <tr>
+        <th>Açıklama</th>
+        <td id="dAciklama"></td>
+      </tr>
+
+    </table>
+
+  </div>
+
+  <br>
+  <! -- =============================== -->
+  <!-- ARAÇTAKİ ÜRÜNLER -->
+  <!-- =============================== -->
+  <div class="card">
+    <h2>📦 Araçtaki Ürünler</h2>
+    <div class="table-wrapper">
+      <table>
+
+        <thead>
+
+        <tr>
+          <th>Ürün Kodu</th>
+          <th>Ürün Adı</th>
+          <th>Miktar</th>
+          <th>Koli No</th>
+          <th>Teslim Durumu</th>
+          <th>İşlem</th>
+        </tr>
+
+        </thead>
+
+        <tbody id="urunTableBody">
+
+        <tr>
+
+          <td colspan="6">
+
+            Henüz ürün eklenmedi.
+
+          </td>
+
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+    <br>
+    <h3> Yeni Ürün Ekle</h3>
+    <input
+    type="text"
+    id="urunKodu"
+    placeholder="Ürün Kodu">
+
+    <input
+            type="text"
+            id="urunAdi"
+            placeholder="Ürün Adı">
+
+    <input
+            type="number"
+            id="miktar"
+            placeholder="Miktar">
+
+    <input
+            type="text"
+            id="koliNo"
+            placeholder="Koli No">
+
+    <select id="teslimDurumu">
+
+      <option value="Teslim Edilmedi">
+        Teslim Edilmedi
+      </option>
+
+      <option value="Teslim Edildi">
+        Teslim Edildi
+      </option>
+
+    </select>
+
+    <br><br>
+
+    <button
+            id="urunEkleButonu"
+            onclick="urunEkle()">
+
+      ➕ Ürün Ekle
+
+    </button>
+
+  </div>
+
+  <br>
+  <!-- =============================== -->
+  <!-- ULAŞIM GEÇMİŞİ -->
+  <!-- =============================== -->
+
+  <div class="card">
+
+    <h2>🕘 Ulaşım Geçmişi</h2>
+
+    <label for="rotaDurumuFiltre">
+      Rota Durumuna Göre Filtrele:
+    </label>
+
+    <select id="rotaDurumuFiltre">
+
+      <option value="Tümü">Tümü</option>
+      <option value="Planlandı">Planlandı</option>
+      <option value="Yolda">Yolda</option>
+      <option value="Tamamlandı">Tamamlandı</option>
+      <option value="İptal Edildi">İptal Edildi</option>
+
+    </select>
+
+    <br><br>
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+
+        <tr>
+          <th>İşlem Tarihi</th>
+          <th>İşlem Türü</th>
+          <th>Plaka</th>
+          <th>Sürücü</th>
+          <th>Başlangıç</th>
+          <th>Varış</th>
+          <th>Rota</th>
+          <th>Güncel Konum</th>
+          <th>Başlangıç Zamanı</th>
+          <th>Tahmini Süre</th>
+          <th>Toplam Mesafe</th>
+          <th>Yakıt</th>
+          <th>Rotadan Çıktı mı?</th>
+          <th>Ürün Teslim Alındı mı?</th>
+          <th>Koli / Kutu No</th>
+          <th>Teslim Alma Zamanı</th>
+          <th>Teslim Alan Kişi</th>
+          <th>Teslim Alınan Firma</th>
+          <th>Teslim Edildi mi?</th>
+          <th>Teslim Zamanı</th>
+          <th>Teslim Alan Müşteri</th>
+          <th>Teslim Onay Kodu</th>
+          <th>Rota Durumu</th>
+          <th>Açıklama</th>
+        </tr>
+
+        </thead>
+
+        <tbody id="ulasimGecmisTableBody">
+
+        <tr>
+          <td colspan="24">
+            Geçmiş kayıtları yükleniyor...
+          </td>
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <br>
+
+  <button onclick="history.back()">
+    ← Geri Dön
+  </button>
+
+</div>
+
+<script src="ulasim-detay.js"></script>
+
+</body>
+
+</html>

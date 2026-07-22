@@ -2,59 +2,45 @@ public class Cargo {
     public String getKargoNo() {
         return kargoNo;
     }
-
     public String getGonderici() {
         return gonderici;
     }
-
     public String getAlici() {
         return alici;
     }
-
     public String getGondericiSube() {
         return gondericiSube;
     }
-
     public String getTeslimatSube() {
         return teslimatSube;
     }
-
     public double getDesi() {
         return desi;
     }
-
     public double getAgirlik() {
         return agirlik;
     }
-
     public String getDurum() {
         return durum;
     }
-
     public String getVerilisTarihi() {
         return verilisTarihi;
     }
-
     public String getTahminiTeslim() {
         return tahminiTeslim;
     }
-
     public String getTeslimTarihi() {
         return teslimTarihi;
     }
-
     public String getPlaka() {
         return plaka;
     }
-
     public String getSurucu() {
         return surucu;
     }
-
     public String getTakipNotu() {
         return takipNotu;
     }
-
     private String kargoNo;
     private String gonderici;
     private String alici;

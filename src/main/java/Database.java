@@ -266,5 +266,96 @@ public class Database {
 
         }
     }
+    // =========================================
+// ULAŞIM GEÇMİŞ TABLOSU
+// =========================================
+
+    public static void createUlasimGecmisTable() {
+
+        String sql = """
+    CREATE TABLE IF NOT EXISTS ulasim_gecmis (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        islem_tarihi TEXT NOT NULL,
+        islem_turu TEXT NOT NULL,
+        plaka TEXT NOT NULL,
+        surucu TEXT NOT NULL,
+        baslangic TEXT NOT NULL,
+        varis TEXT NOT NULL,
+        rota TEXT,
+        guncel_konum TEXT,
+        baslangic_zamani TEXT,
+        tahmini_sure INTEGER,
+        toplam_mesafe REAL,
+        yakit REAL,
+        rotadan_cikti TEXT,
+        teslim_alindi TEXT,
+        koli_no TEXT,
+        teslim_alma_zamani TEXT,
+        teslim_alan TEXT,
+        teslim_alinan_firma TEXT,
+        teslim_edildi TEXT,
+        teslim_zamani TEXT,
+        musteri TEXT,
+        onay_kodu TEXT,
+        rota_durumu TEXT,
+        aciklama TEXT
+    )
+    """;
+
+        try (
+                Connection connection = getConnection();
+                PreparedStatement statement =
+                        connection.prepareStatement(sql)
+        ) {
+
+            statement.executeUpdate();
+
+            System.out.println("Ulaşım Geçmiş tablosu hazır.");
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+    }
+    public static void createUlasimUrunTable() {
+
+        String sql = """
+            CREATE TABLE IF NOT EXISTS ulasim_urun (
+
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+                plaka TEXT NOT NULL,
+
+                urun_kodu TEXT NOT NULL,
+
+                urun_adi TEXT NOT NULL,
+
+                miktar INTEGER NOT NULL,
+
+                koli_no TEXT,
+
+                teslim_durumu TEXT
+
+            )
+            """;
+
+        try (
+                Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+
+            statement.executeUpdate();
+
+            System.out.println("Ulaşım ürün tablosu hazır.");
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
+
 
 }

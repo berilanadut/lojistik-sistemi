@@ -40,6 +40,34 @@ if (mesaiCard) {
     });
 }
 // ===============================
+// URL'DEN KARGO NO ALIP FORMU DOLDUR
+// ===============================
+
+const kargoUrlBilgisi = new URLSearchParams(window.location.search);
+const guncellenecekKargoNo = kargoUrlBilgisi.get("kargoNo");
+
+
+if (guncellenecekKargoNo) {
+
+    fetch("/api/kargo?kargoNo=" + encodeURIComponent(guncellenecekKargoNo))
+        .then(function(response){
+
+            return response.json();
+
+        })
+        .then(function(kargo){
+
+            formuDoldur(kargo);
+
+        })
+        .catch(function(hata){
+
+            console.error("Güncellenecek kargo alınamadı:", hata);
+
+        });
+
+}
+// ===============================
 // FORM BİLGİLERİNİ AL
 // ===============================
 
@@ -490,22 +518,42 @@ function kargolariYukle() {
 
                yeniSatir.innerHTML = `
                    <td>
-                       <a href="/kargo-detay?kargoNo=${encodeURIComponent(kargo.kargoNo)}">
-                           ${kargo.kargoNo || ""}
-                       </a>
-                   </td>
+                       ${kargo.kargoNo || ""} </td>
+
                    <td>${kargo.gonderici || ""}</td>
+
                    <td>${kargo.alici || ""}</td>
+
                    <td>${kargo.gondericiSube || ""}</td>
+
                    <td>${kargo.teslimatSube || ""}</td>
+
                    <td>${kargo.desi || ""}</td>
+
                    <td>${kargo.agirlik || ""}</td>
+
                    <td>${kargo.durum || ""}</td>
+
                    <td>${kargo.verilisTarihi || ""}</td>
+
                    <td>${kargo.tahminiTeslim || ""}</td>
+
                    <td>${kargo.teslimTarihi || ""}</td>
 
+                   <td>
+                       <button
+                       class="detail-btn"
+                       onclick="window.location.href='/kargo-detay?kargoNo=${encodeURIComponent(kargo.kargoNo)}'">
+                           Detay
+                       </button>
 
+
+                       <button
+                       class="edit-btn"
+                       onclick="window.location.href='/kargo?kargoNo=${encodeURIComponent(kargo.kargoNo)}'">
+                           Güncelle
+                       </button>
+                   </td>
                `;
 
                 tablo.appendChild(yeniSatir);
@@ -554,6 +602,34 @@ if (sonrakiSayfaBtn) {
                    aktifSayfa++;
                    kargolariYukle();
                }
+
+           });
+       }
+       const stokUrlBilgisi = new URLSearchParams(window.location.search);
+       const guncellenecekUrunKodu = stokUrlBilgisi.get("urunKodu");
+
+       if (guncellenecekUrunKodu) {
+
+           fetch(
+               "/api/urun?urunKodu=" +
+               encodeURIComponent(guncellenecekUrunKodu)
+           )
+           .then(function(response){
+
+               return response.json();
+
+           })
+           .then(function(urun){
+
+               urunFormunuDoldur(urun);
+
+           })
+           .catch(function(hata){
+
+               console.error(
+                   "Güncellenecek ürün alınamadı:",
+                   hata
+               );
 
            });
        }
@@ -986,6 +1062,9 @@ function urunleriYukle() {
                        <button onclick="window.location.href='/stok-detay?urunKodu=${encodeURIComponent(urun.urunKodu)}'">
                            Geçmiş
                        </button>
+                       <button onclick="window.location.href='/stok?urunKodu=${encodeURIComponent(urun.urunKodu)}'">
+                           Güncelle
+                       </button>
                     </td> `;
                 tablo.appendChild(satir);
             });
@@ -1102,6 +1181,50 @@ function stokCikarButonu(urunKodu) {
     }
 
     stokCikar(urunKodu, miktar);
+}
+// ===============================
+// URL'DEN PLAKA ALIP FORMU DOLDUR
+// ===============================
+
+const ulasimUrlBilgisi =
+    new URLSearchParams(window.location.search);
+
+const guncellenecekPlaka =
+    ulasimUrlBilgisi.get("plaka");
+
+if (guncellenecekPlaka) {
+
+    fetch(
+        "/api/ulasim?plaka=" +
+        encodeURIComponent(guncellenecekPlaka)
+    )
+    .then(function(response) {
+
+        if (!response.ok) {
+
+            return response.text().then(function(mesaj) {
+
+                throw new Error(mesaj);
+
+            });
+        }
+
+        return response.json();
+
+    })
+    .then(function(ulasim) {
+
+        ulasimFormunuDoldur(ulasim);
+
+    })
+    .catch(function(hata) {
+
+        console.error(
+            "Güncellenecek ulaşım kaydı alınamadı:",
+            hata
+        );
+
+    });
 }
 
 
@@ -1381,6 +1504,8 @@ if (ulasimKaydetBtn) {
 
                 ulasimFormunuTemizle();
 
+                aktifUlasimSayfa = 1;
+
                 ulasimlariYukle();
 
             })
@@ -1507,6 +1632,8 @@ if (ulasimGuncelleBtn) {
 
                 ulasimFormunuTemizle();
 
+                aktifUlasimSayfa = 1;
+
                 ulasimlariYukle();
 
             })
@@ -1579,6 +1706,8 @@ if (ulasimSilBtn) {
 
                 ulasimFormunuTemizle();
 
+                aktifUlasimSayfa = 1;
+
                 ulasimlariYukle();
 
             })
@@ -1593,6 +1722,14 @@ if (ulasimSilBtn) {
     });
 
 }
+// ===============================
+// ULAŞIM SAYFALAMA DEĞİŞKENLERİ
+// ===============================
+
+let aktifUlasimSayfa = 1;
+const ulasimKayitSayisi = 5;
+let toplamUlasimSayfa = 1;
+
 // ===============================
 // VERİTABANINDAKİ ULAŞIMLARI YÜKLE
 // GET
@@ -1623,37 +1760,143 @@ function ulasimlariYukle() {
             const tablo =
                 document.getElementById("ulasimTableBody");
 
+            const sayfalamaAlani =
+                document.getElementById("ulasimSayfalama");
+
             if (!tablo) {
                 return;
             }
 
             tablo.innerHTML = "";
 
-            ulasimlar.forEach(function (ulasim) {
+            if (sayfalamaAlani) {
+                sayfalamaAlani.innerHTML = "";
+            }
 
-                const satir =
-                    document.createElement("tr");
+            // Toplam sayfa sayısını hesaplar
+            toplamUlasimSayfa =
+                Math.ceil(
+                    ulasimlar.length /
+                    ulasimKayitSayisi
+                );
 
-                satir.innerHTML = `
-                    <td>${ulasim.plaka || ""}</td>
-                    <td>${ulasim.surucu || ""}</td>
-                    <td>${ulasim.baslangic || ""}</td>
-                    <td>${ulasim.varis || ""}</td>
-                    <td>${ulasim.rota || ""}</td>
-                    <td>${ulasim.guncelKonum || ""}</td>
-                    <td>${ulasim.tahminiSure ?? ""}</td>
-                    <td>${ulasim.toplamMesafe ?? ""}</td>
-                    <td>${ulasim.yakit ?? ""}</td>
-                    <td>${ulasim.rotadanCikti || ""}</td>
-                    <td>${ulasim.koliNo || ""}</td>
-                    <td>${ulasim.teslimAlindi || ""}</td>
-                    <td>${ulasim.teslimEdildi || ""}</td>
-                    <td>${ulasim.rotaDurumu || ""}</td>
-                `;
+            // Hiç kayıt yoksa toplam sayfa 1 kabul edilir
+            if (toplamUlasimSayfa === 0) {
+                toplamUlasimSayfa = 1;
+            }
 
-                tablo.appendChild(satir);
+            // Aktif sayfa toplam sayfadan büyükse son sayfaya geçer
+            if (aktifUlasimSayfa > toplamUlasimSayfa) {
 
-            });
+                aktifUlasimSayfa =
+                    toplamUlasimSayfa;
+
+            }
+
+            // Gösterilecek kayıtların başlangıç sırasını hesaplar
+            const baslangicSirasi =
+                (aktifUlasimSayfa - 1) *
+                ulasimKayitSayisi;
+
+            // Gösterilecek kayıtların bitiş sırasını hesaplar
+            const bitisSirasi =
+                baslangicSirasi +
+                ulasimKayitSayisi;
+
+            // Sadece aktif sayfada gösterilecek kayıtları alır
+            const sayfadakiUlasimlar =
+                ulasimlar.slice(
+                    baslangicSirasi,
+                    bitisSirasi
+                );
+
+            sayfadakiUlasimlar.forEach(
+                function (ulasim) {
+
+                    const satir =
+                        document.createElement("tr");
+
+                    satir.innerHTML = `
+                       <td>${ulasim.plaka || ""}</td>
+                        <td>${ulasim.surucu || ""}</td>
+                        <td>${ulasim.baslangic || ""}</td>
+                        <td>${ulasim.varis || ""}</td>
+                        <td>${ulasim.rota || ""}</td>
+                        <td>${ulasim.guncelKonum || ""}</td>
+                        <td>${ulasim.tahminiSure ?? ""}</td>
+                        <td>${ulasim.toplamMesafe ?? ""}</td>
+                        <td>${ulasim.yakit ?? ""}</td>
+                        <td>${ulasim.rotadanCikti || ""}</td>
+                        <td>${ulasim.koliNo || ""}</td>
+                        <td>${ulasim.teslimAlindi || ""}</td>
+                        <td>${ulasim.teslimEdildi || ""}</td>
+                        <td>${ulasim.rotaDurumu || ""}</td>
+                        <td>
+                            <button
+                                class="detail-btn"
+                                onclick="window.location.href='/ulasim-detay?plaka=${encodeURIComponent(ulasim.plaka)}'">
+
+                                Detay
+
+                            </button>
+
+                            <button
+                                class="edit-btn"
+                                onclick="window.location.href='/ulasim?plaka=${encodeURIComponent(ulasim.plaka)}'">
+
+                                Güncelle
+
+                            </button>
+                        </td>
+                    `;
+
+                    tablo.appendChild(satir);
+
+                }
+            );
+
+            // Sayfa numarası butonlarını oluşturur
+            if (sayfalamaAlani) {
+
+                for (
+                    let sayfaNo = 1;
+                    sayfaNo <= toplamUlasimSayfa;
+                    sayfaNo++
+                ) {
+
+                    const sayfaButonu =
+                        document.createElement("button");
+
+                    sayfaButonu.textContent =
+                        sayfaNo;
+
+                    if (
+                        sayfaNo ===
+                        aktifUlasimSayfa
+                    ) {
+
+                        sayfaButonu.classList.add("aktifSayfa"
+
+                        );
+
+                    }
+
+                    sayfaButonu.addEventListener("click",function () {
+
+                            aktifUlasimSayfa =  sayfaNo;
+
+                            ulasimlariYukle();
+
+                        }
+                    );
+
+                    sayfalamaAlani.appendChild(sayfaButonu);
+
+
+
+                }
+
+            }
 
         })
         .catch(function (hata) {
@@ -1665,8 +1908,7 @@ function ulasimlariYukle() {
 
         });
 
-}
-// ===============================
+}// ===============================
 // SAYFA AÇILINCA ULAŞIMLARI YÜKLE
 // ===============================
 

@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class UlasimDAO {
 
@@ -71,9 +73,20 @@ public class UlasimDAO {
             statement.setString(21, ulasim.getRotaDurumu());
             statement.setString(22, ulasim.getAciklama());
 
-            statement.executeUpdate();
+            int eklenenSatirSayisi =
+                    statement.executeUpdate();
 
-            return true;
+            if (eklenenSatirSayisi > 0) {
+
+                ulasimGecmisineKaydet(
+                        ulasim,
+                        "EKLENDİ"
+                );
+
+                return true;
+            }
+
+            return false;
 
         } catch (SQLException e) {
 
@@ -168,6 +181,14 @@ public class UlasimDAO {
 
     public static boolean update(Ulasim ulasim) {
 
+        Ulasim eskiUlasim =
+                findByPlaka(ulasim.getPlaka());
+
+        if (eskiUlasim == null) {
+
+            return false;
+        }
+
         String sql = """
                 UPDATE ulasim
                 SET
@@ -229,7 +250,17 @@ public class UlasimDAO {
             int degisenSatirSayisi =
                     statement.executeUpdate();
 
-            return degisenSatirSayisi > 0;
+            if (degisenSatirSayisi > 0) {
+
+                ulasimGecmisineKaydet(
+                        eskiUlasim,
+                        "GÜNCELLEME ÖNCESİ"
+                );
+
+                return true;
+            }
+
+            return false;
 
         } catch (SQLException e) {
 
@@ -247,6 +278,14 @@ public class UlasimDAO {
 
     public static boolean delete(String plaka) {
 
+        Ulasim silinecekUlasim =
+                findByPlaka(plaka);
+
+        if (silinecekUlasim == null) {
+
+            return false;
+        }
+
         String sql = """
                 DELETE FROM ulasim
                 WHERE plaka = ?
@@ -263,7 +302,17 @@ public class UlasimDAO {
             int silinenSatirSayisi =
                     statement.executeUpdate();
 
-            return silinenSatirSayisi > 0;
+            if (silinenSatirSayisi > 0) {
+
+                ulasimGecmisineKaydet(
+                        silinecekUlasim,
+                        "SİLİNDİ"
+                );
+
+                return true;
+            }
+
+            return false;
 
         } catch (SQLException e) {
 
@@ -271,6 +320,57 @@ public class UlasimDAO {
 
             return false;
         }
+    }
+
+
+    // =========================================
+    // ULAŞIM İŞLEMİNİ GEÇMİŞE KAYDET
+    // =========================================
+
+    private static void ulasimGecmisineKaydet(
+            Ulasim ulasim,
+            String islemTuru
+    ) {
+
+        String islemTarihi =
+                LocalDateTime.now().format(
+                        DateTimeFormatter.ofPattern(
+                                "yyyy-MM-dd HH:mm:ss"
+                        )
+                );
+
+        UlasimGecmis ulasimGecmis =
+                new UlasimGecmis(
+                        0,
+                        islemTarihi,
+                        islemTuru,
+                        ulasim.getPlaka(),
+                        ulasim.getSurucu(),
+                        ulasim.getBaslangic(),
+                        ulasim.getVaris(),
+                        ulasim.getRota(),
+                        ulasim.getGuncelKonum(),
+                        ulasim.getBaslangicZamani(),
+                        ulasim.getTahminiSure(),
+                        ulasim.getToplamMesafe(),
+                        ulasim.getYakit(),
+                        ulasim.getRotadanCikti(),
+                        ulasim.getTeslimAlindi(),
+                        ulasim.getKoliNo(),
+                        ulasim.getTeslimAlmaZamani(),
+                        ulasim.getTeslimAlan(),
+                        ulasim.getTeslimAlinanFirma(),
+                        ulasim.getTeslimEdildi(),
+                        ulasim.getTeslimZamani(),
+                        ulasim.getMusteri(),
+                        ulasim.getOnayKodu(),
+                        ulasim.getRotaDurumu(),
+                        ulasim.getAciklama()
+                );
+
+        UlasimGecmisDAO.gecmisiKaydet(
+                ulasimGecmis
+        );
     }
 
 

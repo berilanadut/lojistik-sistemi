@@ -602,7 +602,7 @@ box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     background-color: #EFF6FF;
     color: #1E3A8A;
 }
-//* =============================== */
+/* =============================== */
  /* FAZLA MESAİ YÖNETİMİ */
  /* =============================== */
 
@@ -914,6 +914,176 @@ min-width: 1600px;
     text-align: center;
     vertical-align: middle;
 }
+/* =========================================
+   ULAŞIM DETAY SAYFASI
+========================================= */
+
+
+/* Detay bilgi tablosu */
+
+.detayTablo {
+
+    width:100%;
+    border-collapse:collapse;
+
+}
+
+
+.detayTablo th {
+
+    width:35%;
+
+    background:#EFF6FF;
+
+    color:#1E3A8A;
+
+    padding:14px;
+
+    text-align:left;
+
+    border-bottom:1px solid #CBD5E1;
+
+}
+
+
+.detayTablo td {
+
+    padding:14px;
+
+    color:#334155;
+
+    border-bottom:1px solid #CBD5E1;
+
+    text-align:left;
+
+}
 
 
 
+/* =========================================
+   ARAÇTAKİ ÜRÜNLER TABLOSU
+========================================= */
+
+
+#urunTableBody tr:hover {
+
+    background:#F8FAFC;
+
+}
+
+
+#urunTableBody td,
+#urunTableBody th {
+
+    text-align:center;
+
+    padding:12px;
+
+}
+
+
+
+/* Ürün tablosu başlıkları */
+
+#urunTableBody {
+
+    font-size:15px;
+
+}
+
+
+
+/* Ürün form alanı */
+
+#urunKodu,
+#urunAdi,
+#miktar,
+#koliNo,
+#teslimDurumu {
+
+
+    padding:12px;
+
+    border:1px solid #CBD5E1;
+
+    border-radius:8px;
+
+    margin:5px;
+
+    font-size:14px;
+
+}
+
+
+/* ürün ekle butonu */
+
+#urunEkleButonu {
+
+    background:#2563EB;
+
+    color:white;
+
+    border:none;
+
+    padding:12px 25px;
+
+    border-radius:10px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+
+#urunEkleButonu:hover {
+
+    background:#1E40AF;
+
+}
+
+
+
+/* =========================================
+   ULAŞIM GEÇMİŞİ
+========================================= */
+
+
+.table-wrapper {
+
+    width:100%;
+
+    overflow-x:auto;
+
+}
+
+
+.table-wrapper table {
+
+    min-width:1600px;
+
+}
+
+
+
+.table-wrapper th {
+
+    background:#EFF6FF;
+
+    color:#1E3A8A;
+
+    padding:12px;
+
+    white-space:nowrap;
+
+}
+
+.table-wrapper td {
+
+    padding:10px;
+
+    text-align:center;
+
+    white-space:nowrap;
+
+}
