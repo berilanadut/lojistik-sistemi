@@ -28,7 +28,9 @@ public class Main {
         Database.createCargoGecmisTable();
         Database.createStokHareketTable();
         Database.createUlasimGecmisTable();
+        Database.createMesaiGecmisTable();
         Database.createUlasimUrunTable();
+
 
         List<Cargo> kargolar = CargoDAO.findAll();
         List<Urun> urunler = UrunDAO.findAll();
@@ -101,6 +103,13 @@ public class Main {
                         "application/javascript; charset=UTF-8"
                 )
         );
+        server.createContext("/mesai-detay.js", exchange ->
+                dosyaGonder(
+                        exchange,
+                        "/mesai-detay.js",
+                        "application/javascript; charset=UTF-8"
+                )
+        );
 
         server.createContext("/kargo", exchange ->
                 dosyaGonder(
@@ -153,6 +162,13 @@ public class Main {
                         "text/html; charset=UTF-8"
                 )
         );
+        server.createContext("/mesai-detay", exchange ->
+                dosyaGonder(
+                        exchange,
+                        "/mesai-detay.html",
+                        "text/html; charset=UTF-8"
+                )
+        );
 
 
         // =========================================
@@ -202,6 +218,10 @@ public class Main {
         server.createContext(
                 "/api/mesai",
                 Main::mesaiApi
+        );
+        server.createContext(
+                "/api/mesai-gecmis",
+                Main::mesaiGecmisApi
         );
 
 
@@ -1774,4 +1794,64 @@ public class Main {
             output.write(bytes);
         }
     }
+    // =========================================
+// MESAİ GEÇMİŞİ API
+// =========================================
+
+    private static void mesaiGecmisApi(
+            HttpExchange exchange
+    ) throws IOException {
+
+        String method =
+                exchange.getRequestMethod();
+
+        if (!"GET".equals(method)) {
+
+            cevapGonder(
+                    exchange,
+                    405,
+                    "text/plain; charset=UTF-8",
+                    "Bu istek türü desteklenmiyor."
+            );
+
+            return;
+        }
+
+        String mesaiNo =
+                sorguDegeriniAl(
+                        exchange,
+                        "mesaiNo"
+                );
+
+        if (
+                mesaiNo == null ||
+                        mesaiNo.isBlank()
+        ) {
+
+            cevapGonder(
+                    exchange,
+                    400,
+                    "text/plain; charset=UTF-8",
+                    "Mesai numarası gönderilmelidir."
+            );
+
+            return;
+        }
+
+        MesaiGecmisDAO dao =
+                new MesaiGecmisDAO();
+
+        List<MesaiGecmis> gecmisler =
+                dao.mesaiGecmisiniGetir(
+                        mesaiNo
+                );
+
+        cevapGonder(
+                exchange,
+                200,
+                "application/json; charset=UTF-8",
+                gson.toJson(gecmisler)
+        );
+    }
+
 }

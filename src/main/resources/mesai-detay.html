@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Mesai Detayları</title>
+
+  <link
+          rel="stylesheet"
+          href="style.css"
+  >
+
+</head>
+
+<body >
+
+<div class="container">
+
+  <!-- =============================== -->
+  <!-- MESAİ SAYFASINA DÖN -->
+  <!-- =============================== -->
+
+  <a
+          href="/mesai"
+          class="back-button"
+  >
+    ← Mesai Sayfasına Dön
+  </a>
+
+
+  <!-- =============================== -->
+  <!-- SAYFA BAŞLIĞI -->
+  <!-- =============================== -->
+
+  <h1>Mesai Detayları</h1>
+
+  <p class="subtitle">
+    Seçilen fazla mesai kaydının ayrıntıları
+  </p>
+
+
+  <!-- =============================== -->
+  <!-- MESAİ BİLGİLERİ -->
+  <!-- =============================== -->
+
+  <div class="card">
+
+    <h2>Mesai Kayıt Bilgileri</h2>
+
+    <div class="table-container">
+
+      <table>
+
+        <thead>
+
+        <tr>
+
+          <th>Mesai No</th>
+
+          <th>Sicil No</th>
+
+          <th>Ad Soyad</th>
+
+          <th>Departman</th>
+
+          <th>Pozisyon</th>
+
+          <th>Mesai Tarihi</th>
+
+          <th>Başlangıç</th>
+
+          <th>Bitiş</th>
+
+          <th>Mola</th>
+
+          <th>Toplam Mesai</th>
+
+          <th>Mesai Nedeni</th>
+
+          <th>Yapılan İş</th>
+
+          <th>Proje / Operasyon</th>
+
+          <th>Şube / Depo</th>
+
+          <th>Açıklama</th>
+
+        </tr>
+
+        </thead>
+
+
+        <tbody id="mesaiDetayTableBody">
+
+        <!-- Mesai bilgileri JavaScript ile eklenecek -->
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+  <!-- =============================== -->
+  <!-- ÜCRET BİLGİLERİ -->
+  <!-- =============================== -->
+
+  <div class="card">
+
+    <h2>Ücret Bilgileri</h2>
+
+    <div class="table-container">
+
+      <table>
+
+        <thead>
+
+        <tr>
+
+          <th>Aylık Ücret</th>
+
+          <th>Aylık Çalışma Saati</th>
+
+          <th>Mesai Katsayısı</th>
+
+          <th>Normal Saatlik Ücret</th>
+
+          <th>Mesai Saat Ücreti</th>
+
+          <th>Toplam Mesai Ücreti</th>
+
+        </tr>
+
+        </thead>
+
+
+        <tbody id="mesaiUcretDetayTableBody">
+
+        <!-- Ücret bilgileri JavaScript ile eklenecek -->
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+  <!-- =============================== -->
+  <!-- LOJİSTİK OPERASYON BİLGİLERİ -->
+  <!-- =============================== -->
+
+  <div class="card">
+
+    <h2>Lojistik Operasyon Bilgileri</h2>
+
+    <div class="table-container">
+
+      <table>
+
+        <thead>
+
+        <tr>
+
+          <th>Rota Planı Var mı?</th>
+
+          <th>Sıralı Teslimat</th>
+
+          <th>Teslimat Sorunu</th>
+
+          <th>Yerinde Kapatma</th>
+
+          <th>İrsaliye / ATF No</th>
+
+        </tr>
+
+        </thead>
+
+
+        <tbody id="mesaiOperasyonDetayTableBody">
+
+        <!-- Operasyon bilgileri JavaScript ile eklenecek -->
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+  <!-- =============================== -->
+  <!-- ONAY VE ÖDEME BİLGİLERİ -->
+  <!-- =============================== -->
+
+  <div class="card">
+
+    <h2>Onay ve Ödeme Bilgileri</h2>
+
+    <div class="table-container">
+
+      <table>
+
+        <thead>
+
+        <tr>
+
+          <th>Yönetici</th>
+
+          <th>Onay Durumu</th>
+
+          <th>Onay Tarihi</th>
+
+          <th>Ödeme Durumu</th>
+
+          <th>Ödeme Tarihi</th>
+
+        </tr>
+
+        </thead>
+
+
+        <tbody id="mesaiOnayDetayTableBody">
+
+        <!-- Onay ve ödeme bilgileri JavaScript ile eklenecek -->
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+  <!-- =============================== -->
+  <!-- İŞLEM GEÇMİŞİ -->
+  <!-- =============================== -->
+
+  <div class="card">
+
+    <h2>Mesai İşlem Geçmişi</h2>
+
+    <p class="subtitle">
+      Mesai kaydı üzerinde daha önce yapılan değişiklikler
+    </p>
+
+    <div class="table-container">
+
+      <table>
+
+        <thead>
+
+        <tr>
+
+          <th>Mesai No</th>
+
+          <th>İşlem Türü</th>
+
+          <th>Ad Soyad</th>
+
+          <th>Mesai Tarihi</th>
+
+          <th>Toplam Mesai Saati</th>
+
+          <th>Toplam Mesai Ücreti</th>
+
+          <th>Onay Durumu</th>
+
+          <th>Ödeme Durumu</th>
+
+          <th>İşlem Tarihi</th>
+
+        </tr>
+
+        </thead>
+
+
+        <tbody id="mesaiGecmisTableBody">
+
+        <!-- Geçmiş kayıtları JavaScript ile eklenecek -->
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =============================== -->
+<!-- JAVASCRIPT BAĞLANTISI -->
+<!-- =============================== -->
+
+<script src="mesai-detay.js"></script>
+
+</body>
+
+</html>

@@ -356,6 +356,46 @@ public class Database {
         }
 
     }
+    // =========================================
+// MESAİ GEÇMİŞ TABLOSU
+// =========================================
+
+    public static void createMesaiGecmisTable() {
+
+        String sql = """
+    CREATE TABLE IF NOT EXISTS mesai_gecmis (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        islem_tarihi TEXT NOT NULL,
+        islem_turu TEXT NOT NULL,
+        mesai_no TEXT NOT NULL,
+        sicil_no TEXT NOT NULL,
+        ad_soyad TEXT NOT NULL,
+        departman TEXT,
+        pozisyon TEXT,
+        mesai_tarihi TEXT,
+        toplam_mesai_saati REAL,
+        toplam_mesai_ucreti REAL,
+        onay_durumu TEXT,
+        odeme_durumu TEXT
+    )
+    """;
+
+        try (
+                Connection connection = getConnection();
+                PreparedStatement statement =
+                        connection.prepareStatement(sql)
+        ) {
+
+            statement.executeUpdate();
+
+            System.out.println("Mesai Geçmiş tablosu hazır.");
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+    }
 
 
 }

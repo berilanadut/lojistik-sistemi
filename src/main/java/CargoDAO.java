@@ -36,8 +36,8 @@ public class CargoDAO {
 
         try (
                 Connection connection = Database.getConnection();
-                PreparedStatement statement =
-                        connection.prepareStatement(sql)
+                PreparedStatement statement = connection.prepareStatement(sql)
+
         ) {
 
             statement.setString(1, cargo.getKargoNo());
@@ -80,8 +80,7 @@ public class CargoDAO {
 
         try (
                 Connection connection = Database.getConnection();
-                PreparedStatement statement =
-                        connection.prepareStatement(sql);
+                PreparedStatement statement = connection.prepareStatement(sql);
                 ResultSet resultSet = statement.executeQuery()
         ) {
 

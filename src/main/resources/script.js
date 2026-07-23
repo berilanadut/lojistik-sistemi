@@ -51,6 +51,15 @@ if (guncellenecekKargoNo) {
 
     fetch("/api/kargo?kargoNo=" + encodeURIComponent(guncellenecekKargoNo))
         .then(function(response){
+        if (!response.ok) {
+
+                    return response.text().then(function (mesaj) {
+
+                        throw new Error(mesaj);
+
+                    });
+
+                }
 
             return response.json();
 
@@ -63,6 +72,7 @@ if (guncellenecekKargoNo) {
         .catch(function(hata){
 
             console.error("Güncellenecek kargo alınamadı:", hata);
+            alert(hata.message);
 
         });
 
@@ -615,6 +625,15 @@ if (sonrakiSayfaBtn) {
                encodeURIComponent(guncellenecekUrunKodu)
            )
            .then(function(response){
+           if (!response.ok) {
+
+                       return response.text().then(function (mesaj) {
+
+                           throw new Error(mesaj);
+
+                       });
+
+                   }
 
                return response.json();
 
@@ -630,6 +649,7 @@ if (sonrakiSayfaBtn) {
                    "Güncellenecek ürün alınamadı:",
                    hata
                );
+               alert(hata.message);
 
            });
        }
@@ -1223,6 +1243,7 @@ if (guncellenecekPlaka) {
             "Güncellenecek ulaşım kaydı alınamadı:",
             hata
         );
+        alert(hata.message);
 
     });
 }
@@ -1925,6 +1946,44 @@ if (ulasimTableBody) {
 // ===============================
 
 // ===============================
+// URL'DEN MESAİ NO ALIP FORMU DOLDUR
+// ===============================
+
+const mesaiUrlBilgisi = new URLSearchParams(window.location.search);
+const guncellenecekMesaiNo = mesaiUrlBilgisi.get("mesaiNo");
+
+if (guncellenecekMesaiNo) {
+
+    fetch("/api/mesai?mesaiNo=" + encodeURIComponent(guncellenecekMesaiNo))
+        .then(function(response){
+        if (!response.ok) {
+
+                    return response.text().then(function (mesaj) {
+
+                        throw new Error(mesaj);
+
+                    });
+
+                }
+
+            return response.json();
+
+        })
+        .then(function(mesai){
+
+            mesaiFormunuDoldur(mesai);
+
+        })
+        .catch(function(hata){
+
+            console.error("Güncellenecek mesai alınamadı:", hata);
+            alert(hata.message);
+
+        });
+
+}
+
+// ===============================
 // MESAİ SÜRESİNİ HESAPLA
 // ===============================
 
@@ -2232,6 +2291,8 @@ function mesaiFormuGecerliMi(mesai) {
 
              mesaiFormunuTemizle();
 
+             aktifMesaiSayfa = 1;
+
              mesaileriYukle();
 
          })
@@ -2341,6 +2402,7 @@ function mesaiFormuGecerliMi(mesai) {
          .then(function (mesaj) {
              alert(mesaj);
              mesaiFormunuTemizle();
+             aktifMesaiSayfa = 1;
              mesaileriYukle();
          })
          .catch(function (hata) {
@@ -2392,6 +2454,7 @@ function mesaiFormuGecerliMi(mesai) {
          .then(function (mesaj) {
              alert(mesaj);
              mesaiFormunuTemizle();
+             aktifMesaiSayfa = 1;
              mesaileriYukle();
          })
          .catch(function (hata) {
@@ -2413,6 +2476,13 @@ function mesaiFormuGecerliMi(mesai) {
          alert("Mesai formu temizlendi.");
      });
  }
+ //===============================
+ // MESAİ SAYFALAMA DEĞİŞKENLERİ
+ //===============================
+
+ let aktifMesaiSayfa = 1;
+ const mesaiKayitSayisi = 5;
+ let toplamMesaiSayfa = 1;
 
  // ===============================
  // VERİTABANINDAKİ MESAİLERİ YÜKLE
@@ -2432,6 +2502,7 @@ function mesaiFormuGecerliMi(mesai) {
      })
      .then(function (mesailer) {
          const tablo = document.getElementById("mesaiTableBody");
+         const sayfaNumaralari = document.getElementById("mesaiSayfaNumaralari");
 
          if (!tablo) {
              return;
@@ -2439,7 +2510,44 @@ function mesaiFormuGecerliMi(mesai) {
 
          tablo.innerHTML = "";
 
-         mesailer.forEach(function (mesai) {
+            if (sayfaNumaralari) {
+                sayfaNumaralari.innerHTML = "";
+            }
+
+            toplamMesaiSayfa =
+                Math.ceil(
+                    mesailer.length /
+                    mesaiKayitSayisi
+                );
+
+            if (toplamMesaiSayfa === 0) {
+                toplamMesaiSayfa = 1;
+            }
+
+            if (aktifMesaiSayfa > toplamMesaiSayfa) {
+
+                aktifMesaiSayfa =
+                    toplamMesaiSayfa;
+
+            }
+
+            const baslangicSirasi =
+                (aktifMesaiSayfa - 1) *
+                mesaiKayitSayisi;
+
+            const bitisSirasi =
+                baslangicSirasi +
+                mesaiKayitSayisi;
+
+            const sayfadakiMesailer =
+                mesailer.slice(
+                    baslangicSirasi,
+                    bitisSirasi
+                );
+
+            sayfadakiMesailer.forEach(function (mesai) {
+
+
              const satir = document.createElement("tr");
 
              satir.innerHTML = `
@@ -2455,11 +2563,64 @@ function mesaiFormuGecerliMi(mesai) {
                  <td>${mesai.toplamMesaiUcreti ?? ""}</td>
                  <td>${mesai.onayDurumu || ""}</td>
                  <td>${mesai.odemeDurumu || ""}</td>
+                 <td>
+                     <button
+                      class="detail-btn"
+                      onclick="window.location.href='/mesai-detay?mesaiNo=${encodeURIComponent(mesai.mesaiNo)}'">
+                        Detay
+                        </button>
+
+                        <button
+                         class="edit-btn"
+                         onclick="window.location.href='/mesai?mesaiNo=${encodeURIComponent(mesai.mesaiNo)}'">
+                           Güncelle
+                          </button>
+                          </td>
              `;
 
              tablo.appendChild(satir);
          });
-     })
+         if (sayfaNumaralari) {
+
+               for (
+                let sayfaNo = 1;
+                 sayfaNo <= toplamMesaiSayfa;
+                   sayfaNo++
+               ) {
+
+               const sayfaButonu =
+                document.createElement("button");
+
+                sayfaButonu.type = "button";
+
+                  sayfaButonu.textContent =
+                  sayfaNo;
+
+                  if ( sayfaNo === aktifMesaiSayfa) {
+
+                      sayfaButonu.classList.add("aktifSayfa" );
+                             }
+
+                         sayfaButonu.addEventListener("click",function () {
+
+                             aktifMesaiSayfa =
+                              sayfaNo;
+
+                               mesaileriYukle();
+
+                                 }
+                             );
+
+                   sayfaNumaralari.appendChild(
+                   sayfaButonu
+                 );
+
+              }
+
+           }
+
+       })
+
      .catch(function (hata) {
          console.error("Mesai kayıtları yüklenemedi:", hata);
      });
@@ -2473,4 +2634,56 @@ function mesaiFormuGecerliMi(mesai) {
 
  if (mesaiTableBody) {
      mesaileriYukle();
+ }
+ // ===============================
+ // MESAİ ÖNCEKİ VE SONRAKİ SAYFA
+ // ===============================
+
+ const mesaiOncekiSayfaBtn =
+     document.getElementById("mesaiOncekiSayfaBtn");
+
+ const mesaiSonrakiSayfaBtn =
+     document.getElementById("mesaiSonrakiSayfaBtn");
+
+
+ if (mesaiOncekiSayfaBtn) {
+
+     mesaiOncekiSayfaBtn.addEventListener(
+         "click",
+         function () {
+
+             if (aktifMesaiSayfa > 1) {
+
+                 aktifMesaiSayfa--;
+
+                 mesaileriYukle();
+
+             }
+
+         }
+     );
+
+ }
+
+
+ if (mesaiSonrakiSayfaBtn) {
+
+     mesaiSonrakiSayfaBtn.addEventListener(
+         "click",
+         function () {
+
+             if (
+                 aktifMesaiSayfa < toplamMesaiSayfa)
+
+              {
+
+                 aktifMesaiSayfa++;
+
+                 mesaileriYukle();
+
+             }
+
+         }
+     );
+
  }

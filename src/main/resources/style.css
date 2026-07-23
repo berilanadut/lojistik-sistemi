@@ -1087,3 +1087,54 @@ min-width: 1600px;
     white-space:nowrap;
 
 }
+/* ===============================
+   MESAİ DETAY TABLOLARI
+=============================== */
+
+.table-container{
+
+    width:100%;
+    overflow-x:auto;
+
+}
+
+.table-container table{
+
+    min-width:1600px;
+    border-collapse:collapse;
+
+}
+
+.table-container th,
+.table-container td{
+
+    padding:12px;
+    text-align:center;
+    vertical-align:middle;
+    white-space:nowrap;
+
+}
+
+.table-container th{
+
+    background:#EFF6FF;
+    color:#1E3A8A;
+
+}
+
+.table-container tbody tr:hover{
+
+    background:#F8FAFC;
+
+}
+
+/* Uzun yazılar satıra geçsin */
+
+#mesaiDetayTableBody td:nth-child(11),
+#mesaiDetayTableBody td:nth-child(12),
+#mesaiDetayTableBody td:nth-child(15){
+
+    white-space:normal;
+    min-width:180px;
+
+}

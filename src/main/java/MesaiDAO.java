@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class MesaiDAO {
 
@@ -88,14 +90,26 @@ public class MesaiDAO {
             statement.setString(30, mesai.getOdemeDurumu());
             statement.setString(31, mesai.getOdemeTarihi());
 
-            statement.executeUpdate();
-            return true;
+            int eklenenSatirSayisi = statement.executeUpdate();
+            if(eklenenSatirSayisi >0){
+                gecmisKaydiOlustur(
+                        mesai,
+                        "EKLENDİ"
+                );
+
+                return true;
+            }
+
+            return false;
 
         } catch (SQLException e) {
+
             e.printStackTrace();
+
             return false;
         }
     }
+
 
     // =========================================
     // 2. BÜTÜN MESAİ KAYITLARINI GETİR
@@ -104,7 +118,12 @@ public class MesaiDAO {
 
     public static List<Mesai> findAll() {
 
-        String sql = "SELECT * FROM mesai";
+        String sql = """
+                SELECT *
+                FROM mesai
+                ORDER BY mesai_no DESC
+                """;
+
         List<Mesai> mesailer = new ArrayList<>();
 
         try (
@@ -164,6 +183,16 @@ public class MesaiDAO {
     // =========================================
 
     public static boolean update(Mesai mesai) {
+        // Güncellemeden önce mevcut kaydı alıyoruz.
+        Mesai eskiMesai =
+                findByMesaiNo(
+                        mesai.getMesaiNo()
+                );
+
+        if (eskiMesai == null) {
+
+            return false;
+        }
 
         String sql = """
                 UPDATE mesai
@@ -238,11 +267,25 @@ public class MesaiDAO {
             statement.setString(30, mesai.getOdemeTarihi());
             statement.setString(31, mesai.getMesaiNo());
 
-            int degisenSatirSayisi = statement.executeUpdate();
-            return degisenSatirSayisi > 0;
+            int degisenSatirSayisi =
+                    statement.executeUpdate();
+
+            if (degisenSatirSayisi > 0) {
+
+                gecmisKaydiOlustur(
+                        eskiMesai,
+                        "GÜNCELLEME ÖNCESİ"
+                );
+
+                return true;
+            }
+
+            return false;
 
         } catch (SQLException e) {
+
             e.printStackTrace();
+
             return false;
         }
     }
@@ -253,6 +296,14 @@ public class MesaiDAO {
     // =========================================
 
     public static boolean delete(String mesaiNo) {
+        // Silmeden önce kaydın son hâlini alıyoruz.
+        Mesai silinecekMesai =
+                findByMesaiNo(mesaiNo);
+
+        if (silinecekMesai == null) {
+
+            return false;
+        }
 
         String sql = """
                 DELETE FROM mesai
@@ -267,13 +318,59 @@ public class MesaiDAO {
             statement.setString(1, mesaiNo);
 
             int silinenSatirSayisi = statement.executeUpdate();
-            return silinenSatirSayisi > 0;
+            if (silinenSatirSayisi > 0) {
+
+                gecmisKaydiOlustur(
+                        silinecekMesai,
+                        "SİLİNDİ"
+                );
+
+                return true;
+            }
+
+            return false;
 
         } catch (SQLException e) {
+
             e.printStackTrace();
+
             return false;
         }
     }
+    //==========================================
+    // MESAİ GEÇMİŞ KAYDI OLUŞTUR
+    //==========================================
+
+    private static void gecmisKaydiOlustur(
+            Mesai mesai,
+            String islemTuru
+    ){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+        String islemTarihi = LocalDateTime
+                .now()
+                .format(formatter);
+        MesaiGecmis mesaiGecmis = new MesaiGecmis();
+        mesaiGecmis.setIslemTarihi(islemTarihi);
+        mesaiGecmis.setIslemTuru(islemTuru);
+        mesaiGecmis.setMesaiNo(mesai.getMesaiNo());
+        mesaiGecmis.setSicilNo(mesai.getSicilNo());
+        mesaiGecmis.setAdSoyad(mesai.getAdSoyad());
+        mesaiGecmis.setDepartman(mesai.getDepartman());
+        mesaiGecmis.setPozisyon(mesai.getPozisyon());
+        mesaiGecmis.setMesaiTarihi(mesai.getMesaiTarihi());
+        mesaiGecmis.setToplamMesaiSaati(mesai.getToplamMesaiSaati());
+        mesaiGecmis.setToplamMesaiUcreti(mesai.getToplamMesaiUcreti());
+        mesaiGecmis.setOnayDurumu(mesai.getOnayDurumu());
+        mesaiGecmis.setOdemeDurumu(mesai.getOdemeDurumu());
+
+        boolean gecmiseKaydedildi = MesaiGecmisDAO.gecmisiKaydet(mesaiGecmis);
+
+        if (!gecmiseKaydedildi) {
+
+            System.out.println("Mesai geçmiş kaydı oluşturulamadı.");
+        }
+    }
+
 
     // =========================================
     // RESULTSET SATIRINI MESAİ NESNESİNE ÇEVİR
