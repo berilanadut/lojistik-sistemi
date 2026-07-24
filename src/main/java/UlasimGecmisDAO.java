@@ -30,21 +30,12 @@ public class UlasimGecmisDAO {
                     toplam_mesafe,
                     yakit,
                     rotadan_cikti,
-                    teslim_alindi,
-                    koli_no,
-                    teslim_alma_zamani,
-                    teslim_alan,
-                    teslim_alinan_firma,
-                    teslim_edildi,
-                    teslim_zamani,
-                    musteri,
-                    onay_kodu,
                     rota_durumu,
                     aciklama
                 )
                 VALUES(
                     ?,?,?,?,?,?,?,?,?,?,?,?,
-                    ?,?,?,?,?,?,?,?,?,?,?,?
+                    ?,?,?
                 )
                 """;
 
@@ -123,56 +114,11 @@ public class UlasimGecmisDAO {
 
             statement.setString(
                     14,
-                    ulasimGecmis.getTeslimAlindi()
-            );
-
-            statement.setString(
-                    15,
-                    ulasimGecmis.getKoliNo()
-            );
-
-            statement.setString(
-                    16,
-                    ulasimGecmis.getTeslimAlmaZamani()
-            );
-
-            statement.setString(
-                    17,
-                    ulasimGecmis.getTeslimAlan()
-            );
-
-            statement.setString(
-                    18,
-                    ulasimGecmis.getTeslimAlinanFirma()
-            );
-
-            statement.setString(
-                    19,
-                    ulasimGecmis.getTeslimEdildi()
-            );
-
-            statement.setString(
-                    20,
-                    ulasimGecmis.getTeslimZamani()
-            );
-
-            statement.setString(
-                    21,
-                    ulasimGecmis.getMusteri()
-            );
-
-            statement.setString(
-                    22,
-                    ulasimGecmis.getOnayKodu()
-            );
-
-            statement.setString(
-                    23,
                     ulasimGecmis.getRotaDurumu()
             );
 
             statement.setString(
-                    24,
+                    15,
                     ulasimGecmis.getAciklama()
             );
 
@@ -265,15 +211,6 @@ public class UlasimGecmisDAO {
                 resultSet.getDouble("toplam_mesafe"),
                 resultSet.getDouble("yakit"),
                 resultSet.getString("rotadan_cikti"),
-                resultSet.getString("teslim_alindi"),
-                resultSet.getString("koli_no"),
-                resultSet.getString("teslim_alma_zamani"),
-                resultSet.getString("teslim_alan"),
-                resultSet.getString("teslim_alinan_firma"),
-                resultSet.getString("teslim_edildi"),
-                resultSet.getString("teslim_zamani"),
-                resultSet.getString("musteri"),
-                resultSet.getString("onay_kodu"),
                 resultSet.getString("rota_durumu"),
                 resultSet.getString("aciklama")
         );

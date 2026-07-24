@@ -11,15 +11,6 @@ public class Ulasim {
     private double toplamMesafe;
     private double yakit;
     private String rotadanCikti;
-    private String teslimAlindi;
-    private String koliNo;
-    private String teslimAlmaZamani;
-    private String teslimAlan;
-    private String teslimAlinanFirma;
-    private String teslimEdildi;
-    private String teslimZamani;
-    private String musteri;
-    private String onayKodu;
     private String rotaDurumu;
     private String aciklama;
 
@@ -38,15 +29,6 @@ public class Ulasim {
                   double toplamMesafe,
                   double yakit,
                   String rotadanCikti,
-                  String teslimAlindi,
-                  String koliNo,
-                  String teslimAlmaZamani,
-                  String teslimAlan,
-                  String teslimAlinanFirma,
-                  String teslimEdildi,
-                  String teslimZamani,
-                  String musteri,
-                  String onayKodu,
                   String rotaDurumu,
                   String aciklama) {
         this.plaka = plaka;
@@ -60,15 +42,6 @@ public class Ulasim {
         this.toplamMesafe = toplamMesafe;
         this.yakit = yakit;
         this.rotadanCikti = rotadanCikti;
-        this.teslimAlindi = teslimAlindi;
-        this.koliNo = koliNo;
-        this.teslimAlmaZamani = teslimAlmaZamani;
-        this.teslimAlan = teslimAlan;
-        this.teslimAlinanFirma = teslimAlinanFirma;
-        this.teslimEdildi = teslimEdildi;
-        this.teslimZamani = teslimZamani;
-        this.musteri = musteri;
-        this.onayKodu = onayKodu;
         this.rotaDurumu = rotaDurumu;
         this.aciklama = aciklama;
     }
@@ -159,78 +132,6 @@ public class Ulasim {
 
     public void setRotadanCikti(String rotadanCikti) {
         this.rotadanCikti = rotadanCikti;
-    }
-
-    public String getTeslimAlindi() {
-        return teslimAlindi;
-    }
-
-    public void setTeslimAlindi(String teslimAlindi) {
-        this.teslimAlindi = teslimAlindi;
-    }
-
-    public String getKoliNo() {
-        return koliNo;
-    }
-
-    public void setKoliNo(String koliNo) {
-        this.koliNo = koliNo;
-    }
-
-    public String getTeslimAlmaZamani() {
-        return teslimAlmaZamani;
-    }
-
-    public void setTeslimAlmaZamani(String teslimAlmaZamani) {
-        this.teslimAlmaZamani = teslimAlmaZamani;
-    }
-
-    public String getTeslimAlan() {
-        return teslimAlan;
-    }
-
-    public void setTeslimAlan(String teslimAlan) {
-        this.teslimAlan = teslimAlan;
-    }
-
-    public String getTeslimAlinanFirma() {
-        return teslimAlinanFirma;
-    }
-
-    public void setTeslimAlinanFirma(String teslimAlinanFirma) {
-        this.teslimAlinanFirma = teslimAlinanFirma;
-    }
-
-    public String getTeslimEdildi() {
-        return teslimEdildi;
-    }
-
-    public void setTeslimEdildi(String teslimEdildi) {
-        this.teslimEdildi = teslimEdildi;
-    }
-
-    public String getTeslimZamani() {
-        return teslimZamani;
-    }
-
-    public void setTeslimZamani(String teslimZamani) {
-        this.teslimZamani = teslimZamani;
-    }
-
-    public String getMusteri() {
-        return musteri;
-    }
-
-    public void setMusteri(String musteri) {
-        this.musteri = musteri;
-    }
-
-    public String getOnayKodu() {
-        return onayKodu;
-    }
-
-    public void setOnayKodu(String onayKodu) {
-        this.onayKodu = onayKodu;
     }
 
     public String getRotaDurumu() {

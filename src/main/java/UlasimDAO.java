@@ -29,19 +29,10 @@ public class UlasimDAO {
                     toplam_mesafe,
                     yakit,
                     rotadan_cikti,
-                    teslim_alindi,
-                    koli_no,
-                    teslim_alma_zamani,
-                    teslim_alan,
-                    teslim_alinan_firma,
-                    teslim_edildi,
-                    teslim_zamani,
-                    musteri,
-                    onay_kodu,
                     rota_durumu,
                     aciklama
                 )
-                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)
                 """;
 
         try (
@@ -61,17 +52,8 @@ public class UlasimDAO {
             statement.setDouble(9, ulasim.getToplamMesafe());
             statement.setDouble(10, ulasim.getYakit());
             statement.setString(11, ulasim.getRotadanCikti());
-            statement.setString(12, ulasim.getTeslimAlindi());
-            statement.setString(13, ulasim.getKoliNo());
-            statement.setString(14, ulasim.getTeslimAlmaZamani());
-            statement.setString(15, ulasim.getTeslimAlan());
-            statement.setString(16, ulasim.getTeslimAlinanFirma());
-            statement.setString(17, ulasim.getTeslimEdildi());
-            statement.setString(18, ulasim.getTeslimZamani());
-            statement.setString(19, ulasim.getMusteri());
-            statement.setString(20, ulasim.getOnayKodu());
-            statement.setString(21, ulasim.getRotaDurumu());
-            statement.setString(22, ulasim.getAciklama());
+            statement.setString(12, ulasim.getRotaDurumu());
+            statement.setString(13, ulasim.getAciklama());
 
             int eklenenSatirSayisi =
                     statement.executeUpdate();
@@ -202,15 +184,6 @@ public class UlasimDAO {
                     toplam_mesafe = ?,
                     yakit = ?,
                     rotadan_cikti = ?,
-                    teslim_alindi = ?,
-                    koli_no = ?,
-                    teslim_alma_zamani = ?,
-                    teslim_alan = ?,
-                    teslim_alinan_firma = ?,
-                    teslim_edildi = ?,
-                    teslim_zamani = ?,
-                    musteri = ?,
-                    onay_kodu = ?,
                     rota_durumu = ?,
                     aciklama = ?
                 WHERE plaka = ?
@@ -232,20 +205,11 @@ public class UlasimDAO {
             statement.setDouble(8, ulasim.getToplamMesafe());
             statement.setDouble(9, ulasim.getYakit());
             statement.setString(10, ulasim.getRotadanCikti());
-            statement.setString(11, ulasim.getTeslimAlindi());
-            statement.setString(12, ulasim.getKoliNo());
-            statement.setString(13, ulasim.getTeslimAlmaZamani());
-            statement.setString(14, ulasim.getTeslimAlan());
-            statement.setString(15, ulasim.getTeslimAlinanFirma());
-            statement.setString(16, ulasim.getTeslimEdildi());
-            statement.setString(17, ulasim.getTeslimZamani());
-            statement.setString(18, ulasim.getMusteri());
-            statement.setString(19, ulasim.getOnayKodu());
-            statement.setString(20, ulasim.getRotaDurumu());
-            statement.setString(21, ulasim.getAciklama());
+            statement.setString(11, ulasim.getRotaDurumu());
+            statement.setString(12, ulasim.getAciklama());
 
             // Hangi ulaşım kaydının güncelleneceğini belirler
-            statement.setString(22, ulasim.getPlaka());
+            statement.setString(13, ulasim.getPlaka());
 
             int degisenSatirSayisi =
                     statement.executeUpdate();
@@ -355,15 +319,6 @@ public class UlasimDAO {
                         ulasim.getToplamMesafe(),
                         ulasim.getYakit(),
                         ulasim.getRotadanCikti(),
-                        ulasim.getTeslimAlindi(),
-                        ulasim.getKoliNo(),
-                        ulasim.getTeslimAlmaZamani(),
-                        ulasim.getTeslimAlan(),
-                        ulasim.getTeslimAlinanFirma(),
-                        ulasim.getTeslimEdildi(),
-                        ulasim.getTeslimZamani(),
-                        ulasim.getMusteri(),
-                        ulasim.getOnayKodu(),
                         ulasim.getRotaDurumu(),
                         ulasim.getAciklama()
                 );
@@ -394,15 +349,6 @@ public class UlasimDAO {
                 resultSet.getDouble("toplam_mesafe"),
                 resultSet.getDouble("yakit"),
                 resultSet.getString("rotadan_cikti"),
-                resultSet.getString("teslim_alindi"),
-                resultSet.getString("koli_no"),
-                resultSet.getString("teslim_alma_zamani"),
-                resultSet.getString("teslim_alan"),
-                resultSet.getString("teslim_alinan_firma"),
-                resultSet.getString("teslim_edildi"),
-                resultSet.getString("teslim_zamani"),
-                resultSet.getString("musteri"),
-                resultSet.getString("onay_kodu"),
                 resultSet.getString("rota_durumu"),
                 resultSet.getString("aciklama")
         );

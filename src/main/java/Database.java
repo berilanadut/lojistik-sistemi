@@ -95,15 +95,6 @@ public class Database {
                 toplam_mesafe REAL,
                 yakit REAL,
                 rotadan_cikti TEXT,
-                teslim_alindi TEXT,
-                koli_no TEXT,
-                teslim_alma_zamani TEXT,
-                teslim_alan TEXT,
-                teslim_alinan_firma TEXT,
-                teslim_edildi TEXT,
-                teslim_zamani TEXT,
-                musteri TEXT,
-                onay_kodu TEXT,
                 rota_durumu TEXT,
                 aciklama TEXT
             )
@@ -288,15 +279,6 @@ public class Database {
         toplam_mesafe REAL,
         yakit REAL,
         rotadan_cikti TEXT,
-        teslim_alindi TEXT,
-        koli_no TEXT,
-        teslim_alma_zamani TEXT,
-        teslim_alan TEXT,
-        teslim_alinan_firma TEXT,
-        teslim_edildi TEXT,
-        teslim_zamani TEXT,
-        musteri TEXT,
-        onay_kodu TEXT,
         rota_durumu TEXT,
         aciklama TEXT
     )

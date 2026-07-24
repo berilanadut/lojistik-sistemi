@@ -1255,78 +1255,63 @@ if (guncellenecekPlaka) {
 
 function ulasimBilgileriniAl() {
 
-    const plaka = document.getElementById("plaka").value.trim();
+    const plaka =
+        document.getElementById("plaka").value.trim();
 
-    const surucu = document.getElementById("surucu").value.trim();
+    const surucu =
+        document.getElementById("surucu").value.trim();
 
-    const baslangic = document.getElementById("baslangic").value.trim();
+    const baslangic =
+         document.getElementById("baslangic").value.trim();
 
-    const varis = document.getElementById("varis").value.trim();
+     const varis =
+         document.getElementById("varis").value.trim();
 
-    const rota = document.getElementById("rota").value.trim();
+     const rota =
+         document.getElementById("rota").value.trim();
 
-    const guncelKonum = document.getElementById("guncelKonum").value.trim();
+     const guncelKonum =
+         document.getElementById("guncelKonum").value.trim();
 
-    const baslangicZamani = document.getElementById("baslangicZamani").value;
+     const baslangicZamani =
+         document.getElementById("baslangicZamani").value;
 
-    const tahminiSure = Number(document.getElementById("tahminiSure").value);
+     const tahminiSure =
+         Number(document.getElementById("tahminiSure").value);
 
-    const toplamMesafe = Number(document.getElementById("toplamMesafe").value);
+     const toplamMesafe =
+         Number(document.getElementById("toplamMesafe").value);
 
-    const yakit = Number(document.getElementById("yakit").value);
+     const yakit =
+         Number(document.getElementById("yakit").value);
 
-    const rotadanCikti = document.getElementById("rotadanCikti").value;
+     const rotadanCikti =
+         document.getElementById("rotadanCikti").value;
 
-    const teslimAlindi = document.getElementById("teslimAlindi").value;
+     const rotaDurumu =
+         document.getElementById("rotaDurumu").value;
 
-    const koliNo = document.getElementById("koliNo").value.trim();
+     const aciklama =
+         document.getElementById("aciklama").value.trim();
 
-    const teslimAlmaZamani = document.getElementById("teslimAlmaZamani").value;
+     const ulasim = {
+         plaka: plaka,
+         surucu: surucu,
+         baslangic: baslangic,
+         varis: varis,
+         rota: rota,
+         guncelKonum: guncelKonum,
+         baslangicZamani: baslangicZamani,
+         tahminiSure: tahminiSure,
+         toplamMesafe: toplamMesafe,
+         yakit: yakit,
+         rotadanCikti: rotadanCikti,
+         rotaDurumu: rotaDurumu,
+         aciklama: aciklama
+     };
 
-    const teslimAlan = document.getElementById("teslimAlan").value.trim();
-
-    const teslimAlinanFirma = document.getElementById("teslimAlinanFirma").value.trim();
-
-    const teslimEdildi = document.getElementById("teslimEdildi").value;
-
-    const teslimZamani = document.getElementById("teslimZamani").value;
-
-    const musteri = document.getElementById("musteri").value.trim();
-
-    const onayKodu = document.getElementById("onayKodu").value.trim();
-
-    const rotaDurumu = document.getElementById("rotaDurumu").value;
-
-    const aciklama = document.getElementById("aciklama").value.trim();
-
-
-    const ulasim = {
-        plaka: plaka,
-        surucu: surucu,
-        baslangic: baslangic,
-        varis: varis,
-        rota: rota,
-        guncelKonum: guncelKonum,
-        baslangicZamani: baslangicZamani,
-        tahminiSure: tahminiSure,
-        toplamMesafe: toplamMesafe,
-        yakit: yakit,
-        rotadanCikti: rotadanCikti,
-        teslimAlindi: teslimAlindi,
-        koliNo: koliNo,
-        teslimAlmaZamani: teslimAlmaZamani,
-        teslimAlan: teslimAlan,
-        teslimAlinanFirma: teslimAlinanFirma,
-        teslimEdildi: teslimEdildi,
-        teslimZamani: teslimZamani,
-        musteri: musteri,
-        onayKodu: onayKodu,
-        rotaDurumu: rotaDurumu,
-        aciklama: aciklama
-    };
-
-    return ulasim;
-}
+     return ulasim;
+ }
 // ===============================
 // ULAŞIM FORM KONTROLÜ
 // ===============================
@@ -1388,23 +1373,36 @@ function ulasimFormunuTemizle() {
     document.getElementById("yakit").value = "";
 
     document.getElementById("rotadanCikti").value = "Hayır";
-    document.getElementById("teslimAlindi").value = "Hayır";
-
-    document.getElementById("koliNo").value = "";
-    document.getElementById("teslimAlmaZamani").value = "";
-    document.getElementById("teslimAlan").value = "";
-    document.getElementById("teslimAlinanFirma").value = "";
-
-    document.getElementById("teslimEdildi").value = "Hayır";
-    document.getElementById("teslimZamani").value = "";
-    document.getElementById("musteri").value = "";
-    document.getElementById("onayKodu").value = "";
-
     document.getElementById("rotaDurumu").value = "Planlandı";
     document.getElementById("aciklama").value = "";
 
-    document.getElementById("plakaAra").value = "";
+    const plakaAra =
+        document.getElementById("plakaAra");
+
+    if (plakaAra) {
+        plakaAra.value = "";
+    }
 }
+
+// ===============================
+// ULAŞIM TEMİZLE
+// ===============================
+
+const ulasimTemizleBtn =
+    document.getElementById("ulasimTemizleBtn");
+
+if (ulasimTemizleBtn) {
+
+    ulasimTemizleBtn.addEventListener("click", function () {
+
+        ulasimFormunuTemizle();
+
+        alert("Ulaşım formu temizlendi.");
+
+    });
+
+}
+
 
 // ===============================
 // ULAŞIM FORMUNU DOLDUR
@@ -1445,32 +1443,29 @@ function ulasimFormunuDoldur(ulasim) {
     document.getElementById("rotadanCikti").value =
         ulasim.rotadanCikti || "Hayır";
 
-    document.getElementById("teslimAlindi").value =
-        ulasim.teslimAlindi || "Hayır";
+    // document.getElementById("teslimAlindi").value =
+    //      ulasim.teslimAlindi || "";
 
-    document.getElementById("koliNo").value =
-        ulasim.koliNo || "";
+    // document.getElementById("teslimAlmaZamani").value =
+    //    ulasim.teslimAlmaZamani || "";
 
-    document.getElementById("teslimAlmaZamani").value =
-        ulasim.teslimAlmaZamani || "";
+    // document.getElementById("teslimAlan").value =
+    //    ulasim.teslimAlan || "";
 
-    document.getElementById("teslimAlan").value =
-        ulasim.teslimAlan || "";
+    // document.getElementById("teslimAlinanFirma").value =
+    //    ulasim.teslimAlinanFirma || "";
 
-    document.getElementById("teslimAlinanFirma").value =
-        ulasim.teslimAlinanFirma || "";
+    // document.getElementById("teslimEdildi").value =
+    //    ulasim.teslimEdildi || "Hayır";
 
-    document.getElementById("teslimEdildi").value =
-        ulasim.teslimEdildi || "Hayır";
+    //document.getElementById("teslimZamani").value =
+    //    ulasim.teslimZamani || "";
 
-    document.getElementById("teslimZamani").value =
-        ulasim.teslimZamani || "";
+    //document.getElementById("musteri").value =
+    //    ulasim.musteri || "";
 
-    document.getElementById("musteri").value =
-        ulasim.musteri || "";
-
-    document.getElementById("onayKodu").value =
-        ulasim.onayKodu || "";
+    //document.getElementById("onayKodu").value =
+    //    ulasim.onayKodu || "";
 
     document.getElementById("rotaDurumu").value =
         ulasim.rotaDurumu || "Planlandı";
@@ -1848,9 +1843,6 @@ function ulasimlariYukle() {
                         <td>${ulasim.toplamMesafe ?? ""}</td>
                         <td>${ulasim.yakit ?? ""}</td>
                         <td>${ulasim.rotadanCikti || ""}</td>
-                        <td>${ulasim.koliNo || ""}</td>
-                        <td>${ulasim.teslimAlindi || ""}</td>
-                        <td>${ulasim.teslimEdildi || ""}</td>
                         <td>${ulasim.rotaDurumu || ""}</td>
                         <td>
                             <button
@@ -2476,6 +2468,8 @@ function mesaiFormuGecerliMi(mesai) {
          alert("Mesai formu temizlendi.");
      });
  }
+
+
  //===============================
  // MESAİ SAYFALAMA DEĞİŞKENLERİ
  //===============================

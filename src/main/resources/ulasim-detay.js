@@ -116,32 +116,32 @@ function ulasimDetayiniGoster(ulasim) {
     document.getElementById("dRotadanCikti").textContent =
         degerGoster(ulasim.rotadanCikti);
 
-    document.getElementById("dTeslimAlindi").textContent =
-        degerGoster(ulasim.teslimAlindi);
+    //document.getElementById("dTeslimAlindi").textContent =
+      //  degerGoster(ulasim.teslimAlindi);
 
-    document.getElementById("dKoliNo").textContent =
-        degerGoster(ulasim.koliNo);
+    //document.getElementById("dKoliNo").textContent =
+    //    degerGoster(ulasim.koliNo);
 
-    document.getElementById("dTeslimAlmaZamani").textContent =
-        degerGoster(ulasim.teslimAlmaZamani);
+    //document.getElementById("dTeslimAlmaZamani").textContent =
+      //  degerGoster(ulasim.teslimAlmaZamani);
 
-    document.getElementById("dTeslimAlan").textContent =
-        degerGoster(ulasim.teslimAlan);
+    //document.getElementById("dTeslimAlan").textContent =
+      //  degerGoster(ulasim.teslimAlan);
 
-    document.getElementById("dTeslimAlinanFirma").textContent =
-        degerGoster(ulasim.teslimAlinanFirma);
+    //document.getElementById("dTeslimAlinanFirma").textContent =
+      //  degerGoster(ulasim.teslimAlinanFirma);
 
-    document.getElementById("dTeslimEdildi").textContent =
-        degerGoster(ulasim.teslimEdildi);
+    //document.getElementById("dTeslimEdildi").textContent =
+      //  degerGoster(ulasim.teslimEdildi);
 
-    document.getElementById("dTeslimZamani").textContent =
-        degerGoster(ulasim.teslimZamani);
+    //document.getElementById("dTeslimZamani").textContent =
+      //  degerGoster(ulasim.teslimZamani);
 
-    document.getElementById("dMusteri").textContent =
-        degerGoster(ulasim.musteri);
+    //document.getElementById("dMusteri").textContent =
+      //  degerGoster(ulasim.musteri);
 
-    document.getElementById("dOnayKodu").textContent =
-        degerGoster(ulasim.onayKodu);
+    //document.getElementById("dOnayKodu").textContent =
+      //  degerGoster(ulasim.onayKodu);
 
     document.getElementById("dRotaDurumu").textContent =
         degerGoster(ulasim.rotaDurumu);
@@ -215,7 +215,7 @@ function ulasimGecmisiniYukle(plakaDegeri) {
 
                 tabloGovdesi.innerHTML = `
                     <tr>
-                        <td colspan="24">
+                        <td colspan="15">
                             Ulaşım geçmişi alınamadı.
                         </td>
                     </tr>
@@ -257,7 +257,7 @@ function ulasimGecmisiniGoster(gecmisler) {
 
         tabloGovdesi.innerHTML = `
             <tr>
-                <td colspan="24">
+                <td colspan="15">
                     Bu araca ait geçmiş kaydı bulunamadı.
                 </td>
             </tr>
@@ -271,33 +271,23 @@ function ulasimGecmisiniGoster(gecmisler) {
         const satir =
             document.createElement("tr");
 
-        satir.innerHTML = `
-            <td>${degerGoster(gecmis.islemTarihi)}</td>
-            <td>${degerGoster(gecmis.islemTuru)}</td>
-            <td>${degerGoster(gecmis.plaka)}</td>
-            <td>${degerGoster(gecmis.surucu)}</td>
-            <td>${degerGoster(gecmis.baslangic)}</td>
-            <td>${degerGoster(gecmis.varis)}</td>
-            <td>${degerGoster(gecmis.rota)}</td>
-            <td>${degerGoster(gecmis.guncelKonum)}</td>
-            <td>${degerGoster(gecmis.baslangicZamani)}</td>
-            <td>${degerGoster(gecmis.tahminiSure)}</td>
-            <td>${degerGoster(gecmis.toplamMesafe)}</td>
-            <td>${degerGoster(gecmis.yakit)}</td>
-            <td>${degerGoster(gecmis.rotadanCikti)}</td>
-            <td>${degerGoster(gecmis.teslimAlindi)}</td>
-            <td>${degerGoster(gecmis.koliNo)}</td>
-            <td>${degerGoster(gecmis.teslimAlmaZamani)}</td>
-            <td>${degerGoster(gecmis.teslimAlan)}</td>
-            <td>${degerGoster(gecmis.teslimAlinanFirma)}</td>
-            <td>${degerGoster(gecmis.teslimEdildi)}</td>
-            <td>${degerGoster(gecmis.teslimZamani)}</td>
-            <td>${degerGoster(gecmis.musteri)}</td>
-            <td>${degerGoster(gecmis.onayKodu)}</td>
-            <td>${degerGoster(gecmis.rotaDurumu)}</td>
-            <td>${degerGoster(gecmis.aciklama)}</td>
-        `;
-
+satir.innerHTML = `
+    <td>${degerGoster(gecmis.islemTarihi)}</td>
+    <td>${degerGoster(gecmis.islemTuru)}</td>
+    <td>${degerGoster(gecmis.plaka)}</td>
+    <td>${degerGoster(gecmis.surucu)}</td>
+    <td>${degerGoster(gecmis.baslangic)}</td>
+    <td>${degerGoster(gecmis.varis)}</td>
+    <td>${degerGoster(gecmis.rota)}</td>
+    <td>${degerGoster(gecmis.guncelKonum)}</td>
+    <td>${degerGoster(gecmis.baslangicZamani)}</td>
+    <td>${degerGoster(gecmis.tahminiSure)}</td>
+    <td>${degerGoster(gecmis.toplamMesafe)}</td>
+    <td>${degerGoster(gecmis.yakit)}</td>
+    <td>${degerGoster(gecmis.rotadanCikti)}</td>
+    <td>${degerGoster(gecmis.rotaDurumu)}</td>
+    <td>${degerGoster(gecmis.aciklama)}</td>
+`;
         tabloGovdesi.appendChild(
             satir
         );
